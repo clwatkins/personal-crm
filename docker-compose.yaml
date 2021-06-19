@@ -23,9 +23,10 @@ services:
         ports:
             - 4000:4000
         networks:
-            - personal-crm-net        
+            - personal-crm-net
+        environment:
+            - REACT_APP_BACKEND_ADDRESS=http://0.0.0.0:5000
 networks:
     personal-crm-net: {}
-
 volumes:
     db-data: {}
