@@ -1,4 +1,6 @@
-const backendAddr = "http://localhost:5000";
+const backendAddr = process.env.REACT_APP_BACKEND_ADDRESS;
+console.log(backendAddr);
+
 const eventEndpoints = {
   add: "people",
   plan: "plan",

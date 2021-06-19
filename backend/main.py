@@ -1,15 +1,16 @@
-import hashlib
 from datetime import datetime
+import hashlib
+import os
 
-import pytz
 from flask import Flask
 from flask_cors import CORS
 from flask_restful import Resource, Api, reqparse
 from flask_sqlalchemy import SQLAlchemy
+import pytz
 
 app = Flask('personal-crm-backend')
 cors = CORS(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////Users/ChrisWatkins/Documents/personal-crm/backend/test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('FLASK_DATABASE_URI')
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -131,4 +132,4 @@ api.add_resource(See, '/see')
 api.add_resource(Plan, '/plan')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False, host=os.getenv('FLASK_HOST'), port=os.getenv('FLASK_PORT'))
