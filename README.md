@@ -8,11 +8,11 @@
 
 ### Running postgres
 
+_Note: password is fake, obvs_
+
 `sudo docker pull postgres`
 
 `sudo docker run --name personal-crm-db -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 --net personal-crm-net -it postgres`
-
-Note: fix password!
 
 `export FLASK_DATABASE_URI=postgresql://postgres:mysecretpassword@localhost:5432/postgres`
 
