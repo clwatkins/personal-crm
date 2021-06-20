@@ -1,6 +1,6 @@
 .vscode
 .idea
-test.db
+*.db
 .env
 
 # Created by .ignore support plugin (hsz.mobi)

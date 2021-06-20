@@ -9,6 +9,7 @@ import { getEvents, getPlans } from "../Api";
 import { useState, useEffect } from "react";
 
 var dateFormat = require("dateformat");
+const dateFormatStr = 'ddd dd/mm/yy HH:MM';
 
 const EventsTable = () => {
   const [eventsList, setEventsList] = useState([]);
@@ -33,13 +34,13 @@ const EventsTable = () => {
       </TableHead>
       <TableBody>
         {eventsList.map((event) => (
-          <TableRow key={event.id}>
+          <TableRow key={event.local_query_id}>
             <TableCell component="th" scope="row">
               {event.person_name}
             </TableCell>
             <TableCell>{event.what}</TableCell>
             <TableCell>
-              {dateFormat(new Date(event.when), "fullDate")}
+              {dateFormat(new Date(event.when), dateFormatStr)}
             </TableCell>
           </TableRow>
         ))}
@@ -71,12 +72,12 @@ const PlansTable = () => {
       </TableHead>
       <TableBody>
         {plansList.map((plan) => (
-          <TableRow key={plan.id}>
+          <TableRow key={plan.local_query_id}>
             <TableCell component="th" scope="row">
               {plan.person_name}
             </TableCell>
             <TableCell>{plan.what}</TableCell>
-            <TableCell>{dateFormat(new Date(plan.when), "fullDate")}</TableCell>
+            <TableCell>{dateFormat(new Date(plan.when), dateFormatStr)}</TableCell>
           </TableRow>
         ))}
       </TableBody>

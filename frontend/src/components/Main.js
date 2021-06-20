@@ -6,19 +6,12 @@ import {
   CssBaseline,
   Grid,
   Toolbar,
-  Typography,
-  Table,
-  TableRow,
-  TableCell,
-  TableHead,
-  TableBody,
+  Typography
 } from "@material-ui/core";
 import withStyles from "@material-ui/styles/withStyles";
 
 import FormController from "./FormController";
-import { getEvents } from "../Api";
-
-var dateFormat = require("dateformat");
+import { EventsTable, PlansTable } from "./Tables";
 
 const styles = (theme) => ({
   root: {
@@ -95,33 +88,6 @@ const styles = (theme) => ({
   },
 });
 
-const buildEventsTable = () => {
-  let events = getEvents(10);
-
-  if (!Array.isArray(events)) return "results are not array";
-
-  <Table aria-label="simple table">
-    <TableHead>
-      <TableRow>
-        <TableCell>Who</TableCell>
-        <TableCell>What</TableCell>
-        <TableCell>When</TableCell>
-      </TableRow>
-    </TableHead>
-    <TableBody>
-      {events.map((event) => (
-        <TableRow key={event.id}>
-          <TableCell align="right">{event.person_id}</TableCell>
-          <TableCell align="right">{event.what}</TableCell>
-          <TableCell align="right">
-            {dateFormat(new Date(event.when), "fullDate")}
-          </TableCell>
-        </TableRow>
-      ))}
-    </TableBody>
-  </Table>;
-};
-
 function Main() {
   return (
     <>
@@ -145,7 +111,7 @@ function Main() {
                   <Typography variant="h6">
                     Who have you seen lately?
                   </Typography>
-                  {buildEventsTable()}
+                  <EventsTable />
                 </CardContent>
               </Card>
             </Grid>
@@ -156,6 +122,7 @@ function Main() {
                   <Typography variant="h6">
                     Who do you want to see more of?
                   </Typography>
+                  <PlansTable />
                 </CardContent>
               </Card>
             </Grid>
