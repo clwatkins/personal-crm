@@ -1,20 +1,21 @@
-FROM python:3.9-slim
+FROM python:3.9-slim-buster
+RUN apt-get update && apt-get install -y netcat
 
-RUN apt-get update
-RUN apt-get install -y make build-essential libpq-dev
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+ENV FLASK_HOST=0.0.0.0
+ENV FLASK_PORT=5000
+EXPOSE 5000
+
+WORKDIR /usr/src/app
 
 RUN pip install poetry
 RUN poetry config virtualenvs.create false
 
-COPY poetry.lock pyproject.toml /
+COPY poetry.lock pyproject.toml /usr/src/app/
 RUN poetry install --no-interaction
 
-COPY main.py /code/
-WORKDIR /code
+COPY src/ /usr/src/app/src/
+COPY entrypoint.sh manage.py /usr/src/app/
 
-ENV FLASK_HOST=0.0.0.0
-ENV FLASK_PORT=5000
-ENV FLASK_DATABASE_URI=sqlite:////test.db
-EXPOSE 5000
-
-CMD ["python", "main.py"]
+ENTRYPOINT ["/usr/src/app/entrypoint.sh"]

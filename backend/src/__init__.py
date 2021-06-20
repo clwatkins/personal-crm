@@ -2,7 +2,7 @@ from datetime import datetime
 import hashlib
 import os
 
-from flask import Flask
+from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_restful import Resource, Api, reqparse
 from flask_sqlalchemy import SQLAlchemy
@@ -66,7 +66,7 @@ class Persons(Resource):
         args = parser.parse_args()
         people = People.query.limit(args.get('limit') or DEFAULT_LIMIT).all()
         print(people)
-        return {'people': [{'id': person.id, 'name': person.name} for person in people]}
+        return jsonify({'people': [{'id': person.id, 'name': person.name} for person in people]})
 
     def post(self):
         args = parser.parse_args()
@@ -101,7 +101,7 @@ class See(Resource):
                 }
             )
 
-        return meetings_return
+        return jsonify(meetings_return)
 
     def post(self):
         args = parser.parse_args()
@@ -139,7 +139,7 @@ class Plan(Resource):
                 }
             )
 
-        return plans_return
+        return jsonify(plans_return)
 
     def post(self):
         args = parser.parse_args()

@@ -1,0 +1,13 @@
+services:
+  db:
+    env_file:
+      - ./.env.dev
+  backend:
+    env_file:
+      - ./.env.dev
+    command: python manage.py run -h 0.0.0.0
+  frontend:
+    env_file:
+      - ./.env.dev
+    ports:
+      - "4000:4000"

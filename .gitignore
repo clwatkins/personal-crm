@@ -1,7 +1,7 @@
 .vscode
 .idea
 *.db
-.env
+.env.prod
 
 # Created by .ignore support plugin (hsz.mobi)
 ### Node template

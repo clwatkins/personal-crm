@@ -1,0 +1,23 @@
+services:
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - net
+    volumes:
+      - db-data:/var/lib/postgresql/data
+  backend:
+    build: backend/.
+    ports:
+      - "5000:5000"
+    networks:
+      - net
+  frontend:
+    build: frontend/.
+    networks:
+      - net
+networks:
+  net: {}
+volumes:
+  db-data: {}

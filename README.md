@@ -1,6 +1,14 @@
 # personal-crm
 
-## Docker notes
+## With docker-compose
+
+Locally: `sudo docker-compose up --build -d`
+
+`sudo docker-compose down -v`
+
+In production: `sudo docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build`
+
+## Manual Docker notes
 
 ### Networking
 
