@@ -5,7 +5,7 @@ services:
   backend:
     env_file:
       - ./.env.dev
-    command: python manage.py run -h 0.0.0.0
+    command: python manage.py run
   frontend:
     env_file:
       - ./.env.dev
