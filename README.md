@@ -1,5 +1,7 @@
 # personal-crm
 
+https://testdriven.io/blog/dockerizing-flask-with-postgres-gunicorn-and-nginx/
+
 ## With docker-compose
 
 Locally: `sudo docker-compose up --build -d`
@@ -7,6 +9,10 @@ Locally: `sudo docker-compose up --build -d`
 `sudo docker-compose down -v`
 
 In production: `sudo docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build`
+
+`sudo docker-compose exec backend python manage.py create_db`
+
+`sudo docker-compose exec backend python manage.py seed_db`
 
 ## Manual Docker notes
 

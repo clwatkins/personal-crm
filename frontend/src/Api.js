@@ -1,4 +1,4 @@
-const backendAddr = process.env.REACT_APP_BACKEND_ADDRESS;
+const backendAddr = "http://0.0.0.0:5000";
 console.log(backendAddr);
 
 const eventEndpoints = {

@@ -65,8 +65,10 @@ class Persons(Resource):
     def get(self):
         args = parser.parse_args()
         people = People.query.limit(args.get('limit') or DEFAULT_LIMIT).all()
-        print(people)
-        return jsonify({'people': [{'id': person.id, 'name': person.name} for person in people]})
+
+        response = jsonify({'people': [{'id': person.id, 'name': person.name} for person in people]})
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response
 
     def post(self):
         args = parser.parse_args()
@@ -101,7 +103,9 @@ class See(Resource):
                 }
             )
 
-        return jsonify(meetings_return)
+        response = jsonify(meetings_return)
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response
 
     def post(self):
         args = parser.parse_args()
@@ -139,7 +143,9 @@ class Plan(Resource):
                 }
             )
 
-        return jsonify(plans_return)
+        response = jsonify(plans_return)
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response
 
     def post(self):
         args = parser.parse_args()
