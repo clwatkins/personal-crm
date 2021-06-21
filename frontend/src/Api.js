@@ -1,4 +1,4 @@
-const backendAddr = "http://0.0.0.0:5000";
+const backendAddr = "http://backend:5000";
 console.log(backendAddr);
 
 const eventEndpoints = {
