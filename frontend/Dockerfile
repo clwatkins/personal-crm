@@ -11,5 +11,4 @@ ADD public ./public
 ADD src ./src
 RUN npm run build
 
-ENV REACT_APP_BACKEND_ADDRESS=http://0.0.0.0:5000
 CMD serve -s build -l 4000

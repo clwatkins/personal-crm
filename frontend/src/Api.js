@@ -1,4 +1,5 @@
-const backendAddr = "http://backend:5000";
+// Assumes backend running on :5000
+const backendAddr = `http://${window.location.hostname}:5000`;
 console.log(backendAddr);
 
 const eventEndpoints = {
