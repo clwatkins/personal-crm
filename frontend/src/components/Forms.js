@@ -5,19 +5,29 @@ import AsyncSelect from "react-select/async";
 import CreatableSelect from "react-select/creatable";
 import { useState } from "react";
 
-const promiseOptions = async () => {
-  const people = await getPeople(-1);
-
-  const selectOptions = people.map((person) => ({
-    value: person.id,
-    label: person.name,
-  }));
-  return selectOptions;
-};
 
 const BaseForm = (personPrompt, commentPrompt, eventType) => {
   const [selectValues, setSelectValues] = useState([]);
   const [textValue, setTextValue] = useState("");
+  const [peopleList, setPeopleList] = useState([])
+
+  const promiseOptions = async (inputValue) => {
+    // Populate peopleList state once only
+    if (peopleList.length === 0) {
+      const peopleResponse = await getPeople(-1);
+
+      setPeopleList(peopleResponse.map((person) => ({
+        value: person.id,
+        label: person.name,
+      })));
+    }
+
+    // Filter list of options based on current input text
+    const selectOptions = peopleList.filter(p =>
+      p.label.toLowerCase().includes(inputValue.toLowerCase()));
+
+    return selectOptions;
+  };
 
   const handleSelectChange = (selectedOption) => {
     setSelectValues(selectedOption);
