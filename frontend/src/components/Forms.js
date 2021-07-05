@@ -1,33 +1,28 @@
 import { postEvent, getPeople } from "../Api";
 
 import { Button, TextField } from "@material-ui/core";
-import AsyncSelect from "react-select/async";
+import Select from "react-select";
 import CreatableSelect from "react-select/creatable";
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
 
 const BaseForm = (personPrompt, commentPrompt, eventType) => {
   const [selectValues, setSelectValues] = useState([]);
   const [textValue, setTextValue] = useState("");
-  const [peopleList, setPeopleList] = useState([])
+  const [peopleList, setPeopleList] = useState([]);
 
-  const promiseOptions = async (inputValue) => {
-    // Populate peopleList state once only
-    if (peopleList.length === 0) {
+  useEffect(() => {
+    const getPeopleFromApi = async () => {
       const peopleResponse = await getPeople(-1);
 
-      setPeopleList(peopleResponse.map((person) => ({
-        value: person.id,
-        label: person.name,
-      })));
-    }
-
-    // Filter list of options based on current input text
-    const selectOptions = peopleList.filter(p =>
-      p.label.toLowerCase().includes(inputValue.toLowerCase()));
-
-    return selectOptions;
-  };
+      setPeopleList(
+        peopleResponse.map((person) => ({
+          value: person.id,
+          label: person.name,
+        }))
+      );
+    };
+    getPeopleFromApi();
+  }, []);
 
   const handleSelectChange = (selectedOption) => {
     setSelectValues(selectedOption);
@@ -65,12 +60,11 @@ const BaseForm = (personPrompt, commentPrompt, eventType) => {
           onChange={handleSelectChange}
         />
       ) : (
-        <AsyncSelect
+        <Select
           isMulti
           cacheOptions
-          defaultOptions
+          options={peopleList}
           value={selectValues}
-          loadOptions={promiseOptions}
           placeholder={personPrompt}
           onChange={handleSelectChange}
         />

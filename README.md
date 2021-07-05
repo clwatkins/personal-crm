@@ -45,3 +45,20 @@ _Note: password is fake, obvs_
 `sudo docker build . -t personal-crm-frontend`
 
 `sudo docker run --rm --name personal-crm-frontend -e REACT_APP_BACKEND_ADDRESS=http://personal-crm-backend:5000 --net personal-crm-net -p 4000:4000 -it personal-crm-frontend`
+
+## Running fully manually
+
+### Frontend
+
+`npm start`
+
+### Backend
+
+```bash
+poetry shell
+export FLASK_DATABASE_URI=sqlite:///./test.db
+export FLASK_ENV=development
+export FLASK_APP=src/__init__.py
+sh local_backend.sh
+flask run
+```
