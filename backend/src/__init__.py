@@ -9,10 +9,10 @@ from flask_sqlalchemy import SQLAlchemy
 import pytz
 
 app = Flask('personal-crm-backend')
-cors = CORS(app)
+CORS(app)
+
 # We want this to fail at start if we haven't set a db connection
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['FLASK_DATABASE_URI']
-app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -67,7 +67,6 @@ class Persons(Resource):
         people = People.query.limit(args.get('limit') or DEFAULT_LIMIT).all()
 
         response = jsonify({'people': [{'id': person.id, 'name': person.name} for person in people]})
-        response.headers.add("Access-Control-Allow-Origin", "*")
         return response
 
     def post(self):
@@ -104,7 +103,6 @@ class See(Resource):
             )
 
         response = jsonify(meetings_return)
-        response.headers.add("Access-Control-Allow-Origin", "*")
         return response
 
     def post(self):
@@ -144,7 +142,6 @@ class Plan(Resource):
             )
 
         response = jsonify(plans_return)
-        response.headers.add("Access-Control-Allow-Origin", "*")
         return response
 
     def post(self):

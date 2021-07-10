@@ -65,3 +65,23 @@ npm run start
 sudo docker build . -t personal-crm-frontend
 sudo docker run --rm --name personal-crm-frontend --net personal-crm-net -p 4000:4000 -it personal-crm-frontend
 ```
+
+### Running fully manually
+
+#### Frontend
+
+```shell
+npm start
+```
+
+#### Backend
+
+```shell
+poetry shell
+export FLASK_DATABASE_URI=sqlite:///./test.db
+export FLASK_ENV=development
+export FLASK_APP=src/__init__.py
+flask run
+```
+
+(and then manually create & seed the database)

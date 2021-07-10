@@ -18,7 +18,7 @@ then
     echo "Tables created"
     echo "Seeding database..."
     python manage.py seed_db
-    echo "SEeded database"
+    echo "Seeded database"
 fi
 
 exec "$@"
