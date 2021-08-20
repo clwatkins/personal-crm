@@ -1,56 +1,55 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
-import { ThemeProvider } from "@material-ui/styles";
-import { createMuiTheme } from "@material-ui/core/styles";
-import { blue, indigo } from "@material-ui/core/colors";
+import {
+  AppBar,
+  Button,
+  CssBaseline,
+  Toolbar,
+  Typography,
+} from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 
 import Main from "./components/Main";
 import Analytics from "./components/Analytics";
 
-const theme = createMuiTheme({
-  palette: {
-    secondary: {
-      main: blue[900],
+const App = () => {
+  const useStyles = makeStyles({
+    root: {
+      color: "white",
+      padding: "20px",
+      fontSize: "16px",
     },
-    primary: {
-      main: indigo[700],
-    },
-  },
-  typography: {
-    // Use the system font instead of the default Roboto font.
-    fontFamily: ['"Lato"', "sans-serif"].join(","),
-  },
-});
+  });
+  const style = useStyles();
 
-export default function App() {
   return (
     <Router>
-      <div>
-        <nav>
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/analytics">Analytics</Link>
-            </li>
-          </ul>
-        </nav>
+      <CssBaseline />
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6">Welcome back...</Typography>
+          <Link to="/">
+            <Button className={style.root}>Home</Button>
+          </Link>
 
+          <Link to="/analytics">
+            <Button className={style.root}>Analytics</Button>
+          </Link>
+        </Toolbar>
+      </AppBar>
+      <main>
         <Switch>
           <Route path="/analytics">
-            <ThemeProvider theme={theme}>
-              <Analytics />
-            </ThemeProvider>
+            <Analytics />
           </Route>
           <Route path="/">
-            <ThemeProvider theme={theme}>
-              <Main />
-            </ThemeProvider>
+            <Main />
           </Route>
         </Switch>
-      </div>
+      </main>
     </Router>
   );
-}
+};
+
+export default App;

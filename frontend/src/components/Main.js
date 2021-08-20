@@ -1,33 +1,16 @@
-import {
-  AppBar,
-  Container,
-  CssBaseline,
-  Toolbar,
-  Typography,
-} from "@material-ui/core";
-import withStyles from "@material-ui/styles/withStyles";
+import { Container } from "@material-ui/core";
 
 import FormController from "./FormController";
-import Styles from "../styles";
 
 function Main() {
   return (
     <>
-      <CssBaseline />
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h3">Welcome back...</Typography>
-        </Toolbar>
-      </AppBar>
-      <main>
-        <Container>
-          <br />
-          <br />
-          <FormController />
-        </Container>
-      </main>
+      <Container>
+        <br />
+        <FormController />
+      </Container>
     </>
   );
 }
 
-export default withStyles(Styles)(Main);
+export default Main;
