@@ -59,6 +59,5 @@ poetry shell
 export FLASK_DATABASE_URI=sqlite:///./test.db
 export FLASK_ENV=development
 export FLASK_APP=src/__init__.py
-sh local_backend.sh
 flask run
 ```

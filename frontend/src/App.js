@@ -1,8 +1,12 @@
+import React from "react";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+
 import { ThemeProvider } from "@material-ui/styles";
 import { createMuiTheme } from "@material-ui/core/styles";
 import { blue, indigo } from "@material-ui/core/colors";
 
 import Main from "./components/Main";
+import Analytics from "./components/Analytics";
 
 const theme = createMuiTheme({
   palette: {
@@ -19,14 +23,34 @@ const theme = createMuiTheme({
   },
 });
 
-function App() {
+export default function App() {
   return (
-    <div>
-      <ThemeProvider theme={theme}>
-        <Main />
-      </ThemeProvider>
-    </div>
+    <Router>
+      <div>
+        <nav>
+          <ul>
+            <li>
+              <Link to="/">Home</Link>
+            </li>
+            <li>
+              <Link to="/analytics">Analytics</Link>
+            </li>
+          </ul>
+        </nav>
+
+        <Switch>
+          <Route path="/analytics">
+            <ThemeProvider theme={theme}>
+              <Analytics />
+            </ThemeProvider>
+          </Route>
+          <Route path="/">
+            <ThemeProvider theme={theme}>
+              <Main />
+            </ThemeProvider>
+          </Route>
+        </Switch>
+      </div>
+    </Router>
   );
 }
-
-export default App;

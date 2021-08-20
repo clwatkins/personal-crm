@@ -1,3 +1,4 @@
+from collections import Counter
 from datetime import datetime
 import hashlib
 import os
@@ -162,9 +163,28 @@ class Plan(Resource):
         return 'Added plans to database'
 
 
+class Analytics(Resource):
+    def get(self, analytics_type):
+        args = parser.parse_args()
+
+        if analytics_type == 'most-seen':
+            meetings_people = db.session.query(Meetings, People).join(People).order_by(
+                Meetings.when.desc()).all()
+
+            meetings_people_all = []
+            for _, (_, person) in enumerate(meetings_people):
+                meetings_people_all.append(person.name)
+
+            most_common_count = Counter(meetings_people_all).most_common(args.get('limit') or DEFAULT_LIMIT)
+
+            response = jsonify({'data': [{'name': name, 'count': count} for name, count in most_common_count]})
+            return response
+
+
 api.add_resource(Persons, '/people')
 api.add_resource(See, '/see')
 api.add_resource(Plan, '/plan')
+api.add_resource(Analytics, '/analytics/<analytics_type>')
 
 if __name__ == '__main__':
     app.run(debug=False, host=os.getenv(

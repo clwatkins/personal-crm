@@ -1,6 +1,8 @@
+from datetime import datetime
+
 from flask.cli import FlaskGroup
 
-from src import app, db, People
+from src import app, db, People, Meetings, _get_hash
 
 cli = FlaskGroup(app)
 
@@ -14,11 +16,20 @@ def create_db():
 
 @cli.command("seed_db")
 def seed_db():
-    person_1 = People(name='Chris', first_met_comment='It is I')
-    person_2 = People(name='Dom', first_met_comment='Tis someone else')
+    to_add = [
+        People(name='Chris', first_met_comment='It is I'),
+        People(name='Dom', first_met_comment='Tis someone else'),
+        Meetings(meeting_hash=_get_hash(datetime.utcnow().isoformat() + 'chill'), person_id=1, when=datetime.utcnow(),
+                 what='chill'),
+        Meetings(meeting_hash=_get_hash(datetime.utcnow().isoformat() + 'eat'), person_id=1, when=datetime.utcnow(),
+                 what='eat'),
+        Meetings(meeting_hash=_get_hash(datetime.utcnow().isoformat() + 'sleep'), person_id=2, when=datetime.utcnow(),
+                 what='sleep'),
+        Meetings(meeting_hash=_get_hash(datetime.utcnow().isoformat() + 'repeat'), person_id=1, when=datetime.utcnow(),
+                 what='repeat')
+    ]
 
-    db.session.add(person_1)
-    db.session.add(person_2)
+    db.session.add_all(to_add)
     db.session.commit()
 
 
