@@ -7,6 +7,8 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_restful import Resource, Api, reqparse
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+
 import pytz
 
 app = Flask('personal-crm-backend')
@@ -18,6 +20,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 api = Api(app)
+migrate = Migrate(app, db)
 
 DEFAULT_LIMIT = 1_000
 UTC = pytz.timezone('UTC')
