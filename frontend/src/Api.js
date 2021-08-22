@@ -6,6 +6,7 @@ const eventEndpoints = {
   add: "people",
   plan: "plan",
   see: "see",
+  notes: "note",
   analyticsMostSeen: "analytics/most-seen",
 };
 
@@ -18,7 +19,6 @@ async function getPeople(limit) {
     method: "GET",
   });
   const data = await res.json();
-  console.log(data);
   return data.people;
 }
 
@@ -31,7 +31,6 @@ async function getPlans(limit) {
     method: "GET",
   });
   const data = await res.json();
-  console.log(data);
   return data.plans;
 }
 
@@ -44,7 +43,6 @@ async function getEvents(limit) {
     method: "GET",
   });
   const data = await res.json();
-  console.log(data);
   return data.meetings;
 }
 
@@ -54,12 +52,33 @@ async function postEvent(eventType, persons, context) {
     context: context,
   };
 
-  const res = await fetch(`${backendAddr}/${eventEndpoints[eventType]}`, {
+  await fetch(`${backendAddr}/${eventEndpoints[eventType]}`, {
     method: "POST",
     headers: { "Content-type": "application/json" },
     body: JSON.stringify(reqData),
   });
-  console.log(res);
+}
+
+async function getNotes(personId) {
+  let addr = `${backendAddr}/${eventEndpoints.notes}/${personId}`;
+  const res = await fetch(addr, {
+    method: "GET",
+  });
+  const data = await res.json();
+  return data.notes;
+}
+
+async function postNote(personId, note) {
+  const reqData = {
+    context: note,
+  };
+  console.log(reqData);
+
+  await fetch(`${backendAddr}/${eventEndpoints.notes}/${personId}`, {
+    method: "POST",
+    headers: { "Content-type": "application/json" },
+    body: JSON.stringify(reqData),
+  });
 }
 
 async function getMostSeen(limit) {
@@ -71,8 +90,7 @@ async function getMostSeen(limit) {
     method: "GET",
   });
   const data = await res.json();
-  console.log(data);
   return data.data;
 }
 
-export { postEvent, getPeople, getEvents, getPlans, getMostSeen };
+export { postEvent, getPeople, getEvents, getPlans, getNotes, postNote, getMostSeen };

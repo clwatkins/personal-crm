@@ -2,7 +2,7 @@ from datetime import datetime
 
 from flask.cli import FlaskGroup
 
-from src import app, db, People, Meetings, _get_hash
+from src import app, db, People, Meetings, Notes, _get_hash
 
 cli = FlaskGroup(app)
 
@@ -26,7 +26,10 @@ def seed_db():
         Meetings(meeting_hash=_get_hash(datetime.utcnow().isoformat() + 'sleep'), person_id=2, when=datetime.utcnow(),
                  what='sleep'),
         Meetings(meeting_hash=_get_hash(datetime.utcnow().isoformat() + 'repeat'), person_id=1, when=datetime.utcnow(),
-                 what='repeat')
+                 what='repeat'),
+        Notes(person_id=1, when=datetime.utcnow(), what='Cool guy'),
+        Notes(person_id=2, when=datetime.utcnow(), what='Even cooler guy'),
+        Notes(person_id=2, when=datetime.utcnow(), what='Learned something interesting...')
     ]
 
     db.session.add_all(to_add)

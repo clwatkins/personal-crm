@@ -88,15 +88,14 @@ class Persons(Resource):
         # Add new people to database
         db.session.add_all([
             People(
-            name=person_name,
-            first_met=when,
-            first_met_comment=context) for person_name in people_names])
+                name=person_name,
+                first_met=when,
+                first_met_comment=context) for person_name in people_names])
 
         db.session.commit()
 
         # Get newly-created person ids and use to add meetings as well
         people = People.query.limit(args.get('limit') or DEFAULT_LIMIT).all()
-
 
         return 'Added people to database'
 
@@ -179,6 +178,26 @@ class Plan(Resource):
         return 'Added plans to database'
 
 
+class Note(Resource):
+    def get(self, person_id):
+        notes = Notes.query.filter_by(person_id=person_id).order_by(Notes.when.desc()).all()
+        response = jsonify({'notes': [{'local_query_id': i, 'when': note.when, 'what': note.what} for i, note in enumerate(notes)]})
+        return response
+
+    def post(self, person_id):
+        args = parser.parse_args()
+        what = args['context']
+        when = datetime.utcnow()
+
+        db.session.add(Notes(
+            person_id=person_id,
+            when=when,
+            what=what))
+
+        db.session.commit()
+        return 'Added note to database'
+
+
 class Analytics(Resource):
     def get(self, analytics_type):
         args = parser.parse_args()
@@ -200,6 +219,7 @@ class Analytics(Resource):
 api.add_resource(Persons, '/people')
 api.add_resource(See, '/see')
 api.add_resource(Plan, '/plan')
+api.add_resource(Note, '/note/<person_id>')
 api.add_resource(Analytics, '/analytics/<analytics_type>')
 
 if __name__ == '__main__':

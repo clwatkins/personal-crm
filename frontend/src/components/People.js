@@ -9,9 +9,11 @@ import {
 import { useState } from "react";
 
 import { PersonSelect } from "./PersonSelect";
+import { NotesTable } from "./Tables";
+import { NoteForm } from "./Forms";
 
 const People = () => {
-  const [selectedPeopleValues, setSelectedPeopleValues] = useState([]);
+  const [selectedPersonValue, setSelectedPersonValue] = useState({value: -1});
 
   return (
     <>
@@ -23,9 +25,9 @@ const People = () => {
             <br />
             <PersonSelect
               isMulti={false}
-              placerholder="Name"
-              selectedValues={selectedPeopleValues}
-              setSelectedValues={setSelectedPeopleValues}
+              placerholder="Contact name"
+              selectedValues={selectedPersonValue}
+              setSelectedValues={setSelectedPersonValue}
             />
             <br />
           </Grid>
@@ -34,6 +36,16 @@ const People = () => {
             <Card variant="outlined">
               <CardContent>
                 <Typography variant="h6">Make a note...</Typography>
+                <NoteForm personId={selectedPersonValue.value} />
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Card variant="outlined">
+              <CardContent>
+                <Typography variant="h6">See notes...</Typography>
+                <NotesTable personId={selectedPersonValue.value} />
               </CardContent>
             </Card>
           </Grid>

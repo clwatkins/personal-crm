@@ -5,7 +5,7 @@ import {
   TableHead,
   TableBody,
 } from "@material-ui/core";
-import { getEvents, getPlans } from "../Api";
+import { getEvents, getPlans, getNotes } from "../Api";
 import { useState, useEffect } from "react";
 
 var dateFormat = require("dateformat");
@@ -85,4 +85,36 @@ const PlansTable = () => {
   );
 };
 
-export { EventsTable, PlansTable };
+const NotesTable = (props) => {
+  const [notesList, setNotesList] = useState([]);
+
+  useEffect(() => {
+    const getNotesFromApi = async (personId) => {
+      const notes = await getNotes(personId);
+      setNotesList(notes);
+    };
+
+    getNotesFromApi(props.personId);
+  }, [props]);
+
+  return (
+    <Table aria-label="simple table">
+      <TableHead>
+        <TableRow>
+          <TableCell size="small">When</TableCell>
+          <TableCell>What</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {notesList.map((note) => (
+          <TableRow key={note.local_query_id}>
+            <TableCell>{dateFormat(new Date(note.when), dateFormatStr)}</TableCell>
+            <TableCell>{note.what}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+};
+
+export { EventsTable, PlansTable, NotesTable };
