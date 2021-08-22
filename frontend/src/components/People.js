@@ -6,17 +6,17 @@ import {
   Typography,
 } from "@material-ui/core";
 
-import { useState } from "react";
+import React, { useState } from "react";
 
 import { PersonSelect } from "./PersonSelect";
 import { NotesTable } from "./Tables";
 import { NoteForm } from "./Forms";
 
 const People = () => {
-  const [selectedPersonValue, setSelectedPersonValue] = useState({value: -1});
+  const [selectedPersonValue, setSelectedPersonValue] = useState({ value: -1 });
 
   return (
-    <>
+    <div>
       <br />
       <Container>
         <Grid container spacing={1}>
@@ -59,7 +59,7 @@ const People = () => {
           </Grid>
         </Grid>
       </Container>
-    </>
+    </div>
   );
 };
 

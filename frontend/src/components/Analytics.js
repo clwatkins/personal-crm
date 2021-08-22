@@ -8,7 +8,7 @@ import {
 import { indigo } from "@material-ui/core/colors";
 
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 import { getMostSeen } from "../Api";
 import { EventsTable, PlansTable } from "./Tables";
@@ -46,7 +46,7 @@ const MostSeenBar = () => {
 
 const Analytics = () => {
   return (
-    <>
+    <div>
       <br />
       <Container>
         <Grid container spacing={1}>
@@ -96,7 +96,7 @@ const Analytics = () => {
           </Grid>
         </Grid>
       </Container>
-    </>
+    </div>
   );
 };
 

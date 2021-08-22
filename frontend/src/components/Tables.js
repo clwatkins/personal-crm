@@ -6,10 +6,10 @@ import {
   TableBody,
 } from "@material-ui/core";
 import { getEvents, getPlans, getNotes } from "../Api";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 var dateFormat = require("dateformat");
-const dateFormatStr = 'ddd dd/mm/yy HH:MM';
+const dateFormatStr = "ddd dd/mm/yy HH:MM";
 
 const EventsTable = () => {
   const [eventsList, setEventsList] = useState([]);
@@ -77,7 +77,9 @@ const PlansTable = () => {
               {plan.person_name}
             </TableCell>
             <TableCell>{plan.what}</TableCell>
-            <TableCell>{dateFormat(new Date(plan.when), dateFormatStr)}</TableCell>
+            <TableCell>
+              {dateFormat(new Date(plan.when), dateFormatStr)}
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
@@ -108,7 +110,9 @@ const NotesTable = (props) => {
       <TableBody>
         {notesList.map((note) => (
           <TableRow key={note.local_query_id}>
-            <TableCell>{dateFormat(new Date(note.when), dateFormatStr)}</TableCell>
+            <TableCell>
+              {dateFormat(new Date(note.when), dateFormatStr)}
+            </TableCell>
             <TableCell>{note.what}</TableCell>
           </TableRow>
         ))}

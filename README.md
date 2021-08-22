@@ -85,3 +85,13 @@ flask run
 ```
 
 (and then manually create & seed the database)
+
+## To run a database migration
+
+Following https://flask-migrate.readthedocs.io/en/latest/
+
+```bash
+flask db init
+flask db migrate -m "Initial migration."
+flask db upgrade
+```

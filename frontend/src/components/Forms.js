@@ -2,19 +2,15 @@ import { postEvent, postNote } from "../Api";
 
 import { Button, TextField } from "@material-ui/core";
 import CreatableSelect from "react-select/creatable";
-import { useState } from "react";
+import React, { useState } from "react";
 
 import { PersonSelect } from "./PersonSelect";
-
 
 const NoteForm = (props) => {
   const [textValue, setTextValue] = useState("");
 
   const handleFormSubmit = async (e) => {
-    postNote(
-      props.personId,
-      textValue
-    );
+    postNote(props.personId, textValue);
 
     setTextValue("");
   };
@@ -25,8 +21,8 @@ const NoteForm = (props) => {
       <TextField
         error={props.personId < 0}
         id="outlined-basic"
-        label={'What have you learned?'}
-        helperText={(props.personId < 0) ? 'Select a person first' : null }
+        label={"What have you learned?"}
+        helperText={props.personId < 0 ? "Select a person first" : null}
         multiline
         rows={2}
         variant="outlined"
@@ -99,7 +95,11 @@ const BasePersonCommentForm = (personPrompt, commentPrompt, eventType) => {
 };
 
 const AddForm = () => {
-  return BasePersonCommentForm("Who did you meet?", "Where did you meet them?", "add");
+  return BasePersonCommentForm(
+    "Who did you meet?",
+    "Where did you meet them?",
+    "add"
+  );
 };
 
 const PlanForm = () => {
@@ -111,7 +111,11 @@ const PlanForm = () => {
 };
 
 const SeeForm = () => {
-  return BasePersonCommentForm("Who are you seeing?", "What are you doing?", "see");
+  return BasePersonCommentForm(
+    "Who are you seeing?",
+    "What are you doing?",
+    "see"
+  );
 };
 
 export { AddForm, PlanForm, SeeForm, NoteForm };
