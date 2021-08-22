@@ -10,8 +10,9 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-import Main from "./components/Main";
 import Analytics from "./components/Analytics";
+import Main from "./components/Main";
+import People from "./components/People";
 
 const App = () => {
   const useStyles = makeStyles({
@@ -33,6 +34,10 @@ const App = () => {
             <Button className={style.root}>Home</Button>
           </Link>
 
+          <Link to="/people">
+            <Button className={style.root}>People</Button>
+          </Link>
+
           <Link to="/analytics">
             <Button className={style.root}>Analytics</Button>
           </Link>
@@ -42,6 +47,9 @@ const App = () => {
         <Switch>
           <Route path="/analytics">
             <Analytics />
+          </Route>
+          <Route path="/people">
+            <People />
           </Route>
           <Route path="/">
             <Main />

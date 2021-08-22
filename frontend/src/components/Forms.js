@@ -1,42 +1,28 @@
-import { postEvent, getPeople } from "../Api";
+import { postEvent } from "../Api";
 
 import { Button, TextField } from "@material-ui/core";
-import Select from "react-select";
 import CreatableSelect from "react-select/creatable";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+
+import { PersonSelect } from "./PersonSelect";
 
 const BaseForm = (personPrompt, commentPrompt, eventType) => {
-  const [selectValues, setSelectValues] = useState([]);
+  const [selectedPeopleValues, setSelectedPeopleValues] = useState([]);
   const [textValue, setTextValue] = useState("");
-  const [peopleList, setPeopleList] = useState([]);
-
-  useEffect(() => {
-    const getPeopleFromApi = async () => {
-      const peopleResponse = await getPeople(-1);
-
-      setPeopleList(
-        peopleResponse.map((person) => ({
-          value: person.id,
-          label: person.name,
-        }))
-      );
-    };
-    getPeopleFromApi();
-  }, []);
-
-  const handleSelectChange = (selectedOption) => {
-    setSelectValues(selectedOption);
-  };
 
   const handleFormSubmit = async (e) => {
     postEvent(
       eventType,
-      selectValues.map(({ value }) => value).join(),
+      selectedPeopleValues.map(({ value }) => value).join(),
       textValue
     );
 
-    setSelectValues([]);
+    setSelectedPeopleValues([]);
     setTextValue("");
+  };
+
+  const handleSelectChange = (selectedOption) => {
+    setSelectedPeopleValues(selectedOption);
   };
 
   return (
@@ -60,13 +46,11 @@ const BaseForm = (personPrompt, commentPrompt, eventType) => {
           onChange={handleSelectChange}
         />
       ) : (
-        <Select
-          isMulti
-          cacheOptions
-          options={peopleList}
-          value={selectValues}
-          placeholder={personPrompt}
-          onChange={handleSelectChange}
+        <PersonSelect
+          isMulti={true}
+          placerholder={personPrompt}
+          selectedValues={selectedPeopleValues}
+          setSelectedValues={setSelectedPeopleValues}
         />
       )}
       <br />

@@ -62,6 +62,15 @@ class Plans(db.Model):
     what = db.Column(db.Text, unique=False, nullable=True)
 
 
+class Notes(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    person_id = db.Column(db.Integer, db.ForeignKey(
+        'people.id'), nullable=False)
+    when = db.Column(db.DateTime, unique=False,
+                     nullable=False, default=datetime.utcnow)
+    what = db.Column(db.Text, unique=False, nullable=True)
+
+
 class Persons(Resource):
     def get(self):
         args = parser.parse_args()
@@ -76,12 +85,19 @@ class Persons(Resource):
         context = args['context']
         when = datetime.utcnow()
 
-        db.session.add_all([People(
+        # Add new people to database
+        db.session.add_all([
+            People(
             name=person_name,
             first_met=when,
             first_met_comment=context) for person_name in people_names])
 
         db.session.commit()
+
+        # Get newly-created person ids and use to add meetings as well
+        people = People.query.limit(args.get('limit') or DEFAULT_LIMIT).all()
+
+
         return 'Added people to database'
 
 
