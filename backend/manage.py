@@ -19,6 +19,12 @@ def seed_db():
     to_add = [
         People(name='Chris', first_met_comment='It is I'),
         People(name='Dom', first_met_comment='Tis someone else'),
+    ]
+
+    db.session.add_all(to_add)
+    db.session.commit()
+
+    to_add = [
         Meetings(meeting_hash=_get_hash(datetime.utcnow().isoformat() + 'chill'), person_id=1, when=datetime.utcnow(),
                  what='chill'),
         Meetings(meeting_hash=_get_hash(datetime.utcnow().isoformat() + 'eat'), person_id=1, when=datetime.utcnow(),
