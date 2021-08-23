@@ -27,8 +27,9 @@ const MostSeenBar = () => {
 
   return (
     <BarChart
-      width={400}
-      height={250}
+      layout="vertical"
+      height={400}
+      width={300}
       data={mostSeenData}
       margin={{
         top: 10,
@@ -37,9 +38,9 @@ const MostSeenBar = () => {
         bottom: 0,
       }}
     >
-      <XAxis dataKey="name" />
-      <YAxis />
-      <Bar dataKey="count" fill={indigo[700]} />
+      <XAxis type="number" />
+      <YAxis dataKey="name" type="category" />
+      <Bar dataKey="count" fill={indigo[700]} label={{ fill: "white" }}></Bar>
     </BarChart>
   );
 };
@@ -67,11 +68,8 @@ const Analytics = () => {
             <Card variant="outlined">
               <CardContent>
                 <Typography variant="h6">
-                  Who have you seen the most of?
+                  Who have you not seen lately?
                 </Typography>
-                <ResponsiveContainer width="100%" height="100%">
-                  <MostSeenBar />
-                </ResponsiveContainer>
               </CardContent>
             </Card>
           </Grid>
@@ -79,7 +77,7 @@ const Analytics = () => {
           <Grid item xs={12}>
             <Card variant="outlined">
               <CardContent>
-                <Typography variant="h6">Who have you seen lately?</Typography>
+                <Typography variant="h6">Who did you see last?</Typography>
                 <EventsTable />
               </CardContent>
             </Card>
