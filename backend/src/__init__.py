@@ -221,8 +221,8 @@ class Analytics(Resource):
             return response
 
         if analytics_type == 'to-see':
-            min_meetings = 3
-            min_timedelta_hours = 30 * 24
+            min_meetings = 2
+            min_timedelta_days = 0
 
             # Sort record of meetings in ascending order -- first to latest
             meetings_people = db.session.query(Meetings, People).join(People).order_by(
@@ -240,9 +240,9 @@ class Analytics(Resource):
                     continue
 
                 # Calculate time since we last saw person
-                last_seen_gap = relativedelta.relativedelta(datetime.utcnow(), meetings[-1])
+                last_seen_gap = relativedelta.relativedelta(datetime.utcnow(), meetings[-1]).normalized()
 
-                if last_seen_gap.hours > min_timedelta_hours:
+                if last_seen_gap.days > min_timedelta_days:
                     to_see.append(
                         {'name': person,
                          'total_meetings': len(meetings),
@@ -254,6 +254,8 @@ class Analytics(Resource):
                         # Sort list based on normalised length of time since last seen + number of meetings
                         key=lambda d: math.log(d['days_since_last_seen'] + eps) * math.log(d['total_meetings'])
                         )
+
+            print(to_see)
 
             to_see = [{**info, **{'local_query_id': i}} for i, info in enumerate(to_see)]
 
