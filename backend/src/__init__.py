@@ -1,6 +1,8 @@
-from collections import Counter
+from collections import Counter, defaultdict
 from datetime import datetime
+from dateutil import relativedelta
 import hashlib
+import math
 import os
 
 from flask import Flask, jsonify
@@ -217,6 +219,46 @@ class Analytics(Resource):
 
             response = jsonify({'data': [{'name': name, 'count': count} for name, count in most_common_count]})
             return response
+
+        if analytics_type == 'to-see':
+            min_meetings = 3
+            min_timedelta_hours = 30 * 24
+
+            # Sort record of meetings in ascending order -- first to latest
+            meetings_people = db.session.query(Meetings, People).join(People).order_by(
+                Meetings.when.asc()).all()
+
+            # Construct a record of how many times each person has been seen
+            person_timeline = defaultdict(list)
+            for meeting, person in meetings_people:
+                person_timeline[person.name].append(meeting.when)
+
+            to_see = []
+            for person, meetings in person_timeline.items():
+                # Skip anyone we haven't seen enough
+                if len(meetings) < min_meetings:
+                    continue
+
+                last_seen_gap = relativedelta.relativedelta(meetings[-1], meetings[-2])
+
+                if last_seen_gap.hours > min_timedelta_hours:
+                    to_see.append(
+                        {'name': person,
+                         'total_meetings': len(meetings),
+                         'days_since_last_seen': last_seen_gap.days
+                         })
+
+            eps = 1e-6
+            to_see.sort(reverse=False,
+                        # Sort list based on normalised length of time since last seen + number of meetings
+                        key=lambda d: math.log(d['days_since_last_seen'] + eps) * math.log(d['total_meetings'])
+                        )
+
+            to_see = [{**info, **{'local_query_id': i}} for i, info in enumerate(to_see)]
+
+            # Truncate list to desired limit
+            to_see = to_see[:args.get('limit') or DEFAULT_LIMIT]
+            return jsonify({'to_see': to_see})
 
 
 api.add_resource(Persons, '/people')

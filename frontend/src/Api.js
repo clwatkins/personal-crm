@@ -8,6 +8,7 @@ const eventEndpoints = {
   see: "see",
   notes: "note",
   analyticsMostSeen: "analytics/most-seen",
+  analyticsToSee: "analytics/to-see",
 };
 
 async function getPeople(limit) {
@@ -93,4 +94,25 @@ async function getMostSeen(limit) {
   return data.data;
 }
 
-export { postEvent, getPeople, getEvents, getPlans, getNotes, postNote, getMostSeen };
+async function getToSee(limit) {
+  let addr = `${backendAddr}/${eventEndpoints.analyticsToSee}`;
+  if (limit > 0) {
+    addr = addr + `?limit=${limit}`;
+  }
+  const res = await fetch(addr, {
+    method: "GET",
+  });
+  const data = await res.json();
+  return data.to_see;
+}
+
+export {
+  postEvent,
+  getPeople,
+  getEvents,
+  getPlans,
+  getNotes,
+  postNote,
+  getMostSeen,
+  getToSee,
+};

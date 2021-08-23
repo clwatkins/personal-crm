@@ -11,7 +11,7 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import React, { useState, useEffect } from "react";
 
 import { getMostSeen } from "../Api";
-import { EventsTable, PlansTable } from "./Tables";
+import { EventsTable, PlansTable, ToSeeTable } from "./Tables";
 
 const MostSeenBar = () => {
   const [mostSeenData, setMostSeenData] = useState([]);
@@ -70,6 +70,7 @@ const Analytics = () => {
                 <Typography variant="h6">
                   Who have you not seen lately?
                 </Typography>
+                <ToSeeTable />
               </CardContent>
             </Card>
           </Grid>

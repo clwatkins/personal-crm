@@ -5,7 +5,7 @@ import {
   TableHead,
   TableBody,
 } from "@material-ui/core";
-import { getEvents, getPlans, getNotes } from "../Api";
+import { getEvents, getPlans, getNotes, getToSee } from "../Api";
 import React, { useState, useEffect } from "react";
 
 var dateFormat = require("dateformat");
@@ -121,4 +121,38 @@ const NotesTable = (props) => {
   );
 };
 
-export { EventsTable, PlansTable, NotesTable };
+const ToSeeTable = () => {
+  const [toSeeList, setToSeeList] = useState([]);
+
+  useEffect(() => {
+    const getToSeeFromApi = async () => {
+      const toSee = await getToSee(15);
+      setToSeeList(toSee);
+    };
+
+    getToSeeFromApi();
+  }, []);
+
+  return (
+    <Table aria-label="simple table">
+      <TableHead>
+        <TableRow>
+          <TableCell>Who</TableCell>
+          <TableCell>Days since last seen</TableCell>
+          <TableCell>Total meetings</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {toSeeList.map((toSee) => (
+          <TableRow key={toSee.local_query_id}>
+            <TableCell>{toSee.name}</TableCell>
+            <TableCell>{toSee.days_since_last_seen}</TableCell>
+            <TableCell>{toSee.total_meetings}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+};
+
+export { EventsTable, PlansTable, NotesTable, ToSeeTable };
