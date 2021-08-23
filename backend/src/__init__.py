@@ -221,8 +221,8 @@ class Analytics(Resource):
             return response
 
         if analytics_type == 'to-see':
-            min_meetings = 2
-            min_timedelta_days = 0
+            min_meetings = 3
+            min_timedelta_days = 30
 
             # Sort record of meetings in ascending order -- first to latest
             meetings_people = db.session.query(Meetings, People).join(People).order_by(
@@ -250,7 +250,7 @@ class Analytics(Resource):
                          })
 
             eps = 1e-6
-            to_see.sort(reverse=False,
+            to_see.sort(reverse=True,
                         # Sort list based on normalised length of time since last seen + number of meetings
                         key=lambda d: math.log(d['days_since_last_seen'] + eps) * math.log(d['total_meetings'])
                         )
