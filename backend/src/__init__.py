@@ -239,7 +239,8 @@ class Analytics(Resource):
                 if len(meetings) < min_meetings:
                     continue
 
-                last_seen_gap = relativedelta.relativedelta(meetings[-1], meetings[-2])
+                # Calculate time since we last saw person
+                last_seen_gap = relativedelta.relativedelta(datetime.utcnow(), meetings[-1])
 
                 if last_seen_gap.hours > min_timedelta_hours:
                     to_see.append(
