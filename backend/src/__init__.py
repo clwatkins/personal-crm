@@ -240,13 +240,14 @@ class Analytics(Resource):
                     continue
 
                 # Calculate time since we last saw person
-                last_seen_gap = relativedelta.relativedelta(datetime.utcnow(), meetings[-1]).normalized()
+                last_seen_gap = relativedelta.relativedelta(datetime.utcnow(), meetings[-1])
+                last_seen_gap_days = last_seen_gap.years * 365 + last_seen_gap.months * 30 + last_seen_gap.days
 
-                if last_seen_gap.days > min_timedelta_days:
+                if last_seen_gap_days > min_timedelta_days:
                     to_see.append(
                         {'name': person,
                          'total_meetings': len(meetings),
-                         'days_since_last_seen': last_seen_gap.days
+                         'days_since_last_seen': last_seen_gap_days
                          })
 
             eps = 1e-6
