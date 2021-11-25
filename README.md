@@ -8,7 +8,7 @@ Launched, it should look like this:
 
 ## Developer notes
 
-NB: many of the `docker-compose` design patterns come from https://testdriven.io/blog/dockerizing-flask-with-postgres-gunicorn-and-nginx/.
+NB: many of the `docker-compose` design patterns come from [this article](https://testdriven.io/blog/dockerizing-flask-with-postgres-gunicorn-and-nginx/).
 
 ### Launching with `docker-compose`
 
@@ -88,10 +88,30 @@ flask run
 
 ## To run a database migration
 
-Following https://flask-migrate.readthedocs.io/en/latest/
+Following [Flask Migrate's instructions](https://flask-migrate.readthedocs.io/en/latest/)
 
 ```bash
 flask db init
 flask db migrate -m "Initial migration."
 flask db upgrade
+```
+
+### Building for Pi
+
+Use Docker's `buildx` tool. Following steps in [this article](https://collabnix.com/building-arm-based-docker-images-on-docker-desktop-made-possible-using-buildx/), commands were something like...
+
+```shell
+sudo docker buildx create --name pi-builder --platform linux/arm/v7
+sudo docker buildx use pi-builder
+sudo docker buildx inspect --bootstrap
+sudo docker buildx build backend/Dockerfile --load --tag personal-crm_backend:pi
+sudo docker save -o ~/personal-crm-backend-pi.tar personal-crm_backend:pi
+# ...and again for frontend image
+```
+
+Then you can `scp` the built dockerfiles to Pi to run...
+
+```shell
+sudo scp ~/personal-crm-backend-pi.tar pi@raspberrypi.local:/home/pi/personal-crm-backend-pi.tar
+sudo docker load -i personal-crm-backend-pi.tar
 ```
