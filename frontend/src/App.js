@@ -16,8 +16,7 @@ import People from "./components/People";
 
 const HeaderButton = styled(Button)(() => ({
   color: "white",
-  padding: "20px",
-  fontSize: "16px",
+  fontSize: "1rem",
 }));
 
 const App = () => {
@@ -26,9 +25,8 @@ const App = () => {
       <CssBaseline />
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6">Welcome back...</Typography>
           <Link to="/">
-            <HeaderButton>Home</HeaderButton>
+            <HeaderButton>CW CRM</HeaderButton>
           </Link>
 
           <Link to="/people">

@@ -80,7 +80,7 @@ const BasePersonCommentForm = (personPrompt, commentPrompt, eventType) => {
         />
       ) : (
         <PersonSelect
-          isMulti={true}
+          isMulti
           placerholder={personPrompt}
           selectedValues={selectedPeopleValues}
           setSelectedValues={setSelectedPeopleValues}
