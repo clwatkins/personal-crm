@@ -5,8 +5,7 @@ import {
   AppBar,
   Button,
   CssBaseline,
-  Toolbar,
-  Typography,
+  Toolbar
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
