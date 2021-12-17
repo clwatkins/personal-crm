@@ -4,7 +4,7 @@ import {
   TableCell,
   TableHead,
   TableBody,
-} from "@material-ui/core";
+} from "@mui/material";
 import { getEvents, getPlans, getNotes, getToSee } from "../Api";
 import React, { useState, useEffect } from "react";
 

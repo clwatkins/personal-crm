@@ -1,6 +1,6 @@
 import { postEvent, postNote } from "../Api";
 
-import { Button, TextField } from "@material-ui/core";
+import { Button, TextField } from "@mui/material";
 import CreatableSelect from "react-select/creatable";
 import React, { useState } from "react";
 

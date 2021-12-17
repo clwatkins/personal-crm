@@ -7,23 +7,20 @@ import {
   CssBaseline,
   Toolbar,
   Typography,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import Analytics from "./components/Analytics";
 import Main from "./components/Main";
 import People from "./components/People";
 
-const App = () => {
-  const useStyles = makeStyles({
-    root: {
-      color: "white",
-      padding: "20px",
-      fontSize: "16px",
-    },
-  });
-  const style = useStyles();
+const HeaderButton = styled(Button)(() => ({
+  color: "white",
+  padding: "20px",
+  fontSize: "16px",
+}));
 
+const App = () => {
   return (
     <Router>
       <CssBaseline />
@@ -31,15 +28,15 @@ const App = () => {
         <Toolbar>
           <Typography variant="h6">Welcome back...</Typography>
           <Link to="/">
-            <Button className={style.root}>Home</Button>
+            <HeaderButton>Home</HeaderButton>
           </Link>
 
           <Link to="/people">
-            <Button className={style.root}>People</Button>
+            <HeaderButton>People</HeaderButton>
           </Link>
 
           <Link to="/analytics">
-            <Button className={style.root}>Analytics</Button>
+            <HeaderButton>Analytics</HeaderButton>
           </Link>
         </Toolbar>
       </AppBar>

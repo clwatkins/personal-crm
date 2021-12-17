@@ -1,20 +1,16 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { styled } from "@mui/material/styles";
 
-import ToggleButton from "@material-ui/lab/ToggleButton";
-import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
+import {ToggleButton, ToggleButtonGroup} from "@mui/material";
+
+const FormControlBarButton = styled(ToggleButton)(() => ({
+  "&.Mui-selected": {
+    background: "#303f9f",
+    color: "white",
+  }
+}));
 
 const FormControlBar = ({ formBarValue, setFormBarValue }) => {
-  const useStyles = makeStyles({
-    buttonColor: {
-      "&.Mui-selected": {
-        background: "#303f9f",
-        color: "white",
-      },
-    },
-  });
-
-  const customColorClass = useStyles();
 
   const handleChangeFormBarValue = (event, newValue) => {
     setFormBarValue(newValue);
@@ -27,15 +23,15 @@ const FormControlBar = ({ formBarValue, setFormBarValue }) => {
       onChange={handleChangeFormBarValue}
       aria-label="text alignment"
     >
-      <ToggleButton value="see" className={customColorClass.buttonColor}>
+      <FormControlBarButton value="see">
         Seeing
-      </ToggleButton>
-      <ToggleButton value="add" className={customColorClass.buttonColor}>
+      </FormControlBarButton>
+      <FormControlBarButton value="add">
         Adding
-      </ToggleButton>
-      <ToggleButton value="plan" className={customColorClass.buttonColor}>
+      </FormControlBarButton>
+      <FormControlBarButton value="plan">
         Planning
-      </ToggleButton>
+      </FormControlBarButton>
     </ToggleButtonGroup>
   );
 };

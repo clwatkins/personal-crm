@@ -1,5 +1,5 @@
-import { createTheme } from '@material-ui/core/styles';
-import { blue, indigo } from "@material-ui/core/colors";
+import { createTheme } from '@mui/material/styles';
+import { blue, indigo } from "@mui/material/colors";
 
 const appTheme = createTheme({
   palette: {
@@ -9,11 +9,7 @@ const appTheme = createTheme({
     primary: {
       main: indigo[700],
     },
-  },
-  typography: {
-    // Use the system font instead of the default Roboto font.
-    fontFamily: ['"Lato"', "sans-serif"].join(","),
-  },
+  }
 });
 
 export default appTheme;

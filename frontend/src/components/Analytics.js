@@ -4,8 +4,8 @@ import {
   CardContent,
   Grid,
   Typography,
-} from "@material-ui/core";
-import { indigo } from "@material-ui/core/colors";
+} from "@mui/material";
+import { indigo } from "@mui/material/colors";
 
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import React, { useState, useEffect } from "react";
