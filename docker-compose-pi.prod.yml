@@ -4,7 +4,7 @@ services:
       - ./.env.prod
   backend:
     image: backend:pi
-    command: gunicorn --bind 0.0.0.0:5000 manage:app
+    command: ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "5000"]
     env_file:
       - ./.env.prod
   frontend:

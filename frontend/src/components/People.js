@@ -10,7 +10,7 @@ import React, { useState } from "react";
 
 import { PersonSelect } from "./PersonSelect";
 import { NotesTable } from "./Tables";
-import { NoteForm } from "./Forms";
+import { NoteForm, PersonDetailsForm } from "./Forms";
 
 const People = () => {
   const [selectedPersonValue, setSelectedPersonValue] = useState({ value: -1 });
@@ -54,6 +54,7 @@ const People = () => {
             <Card variant="outlined">
               <CardContent>
                 <Typography variant="h6">Change some details...</Typography>
+                <PersonDetailsForm personId={selectedPersonValue.value} />
               </CardContent>
             </Card>
           </Grid>

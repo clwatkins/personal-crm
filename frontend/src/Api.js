@@ -3,83 +3,72 @@ const backendAddr = `http://${window.location.hostname}:5000`;
 console.log(backendAddr);
 
 const eventEndpoints = {
-  add: "people",
-  plan: "plan",
-  see: "see",
-  notes: "note",
+  add: "persons",
+  plan: "plans",
+  see: "meetings",
+  notes: "notes",
+  personDetails: "person",
   analyticsMostSeen: "analytics/most-seen",
   analyticsToSee: "analytics/to-see",
 };
 
-async function getPeople(limit) {
-  let addr = `${backendAddr}/${eventEndpoints.add}`;
+// Event type == persons, plans, meetings
+async function getInfoWithLimit(eventType, limit) {
+  let addr = `${backendAddr}/${eventEndpoints[eventType]}`;
   if (limit > 0) {
     addr = addr + `?limit=${limit}`;
   }
   const res = await fetch(addr, {
     method: "GET",
   });
-  const data = await res.json();
-  return data.people;
+  return await res.json();
 }
 
-async function getPlans(limit) {
-  let addr = `${backendAddr}/${eventEndpoints.plan}`;
-  if (limit > 0) {
-    addr = addr + `?limit=${limit}`;
-  }
-  const res = await fetch(addr, {
+const getPeople = (limit) => getInfoWithLimit('add', limit);
+const getPlans = (limit) => getInfoWithLimit('plan', limit);
+const getMeetings = (limit) => getInfoWithLimit('see', limit);
+
+// Event type == persons, notes
+async function getInfoForPerson(eventType, personId) {
+  const res = await fetch(`${backendAddr}/${eventEndpoints[eventType]}/${personId}`, {
     method: "GET",
   });
-  const data = await res.json();
-  return data.plans;
+  return await res.json();
 }
 
-async function getEvents(limit) {
-  let addr = `${backendAddr}/${eventEndpoints.see}`;
-  if (limit > 0) {
-    addr = addr + `?limit=${limit}`;
-  }
-  const res = await fetch(addr, {
-    method: "GET",
-  });
-  const data = await res.json();
-  return data.meetings;
-}
+var getPersonDetails = (personId) => getInfoForPerson('personDetails', personId);
+var getNotes = (personId) => getInfoForPerson('notes', personId);
 
-async function postEvent(eventType, persons, context) {
-  const reqData = {
-    persons: persons,
-    context: context,
-  };
+async function createEvent(eventType, persons, text) {
+  let addr = `${backendAddr}/${eventEndpoints[eventType]}`;
+  let body = { persons: persons, what: text};
 
-  await fetch(`${backendAddr}/${eventEndpoints[eventType]}`, {
+  console.log(addr);
+  console.log(body);
+
+  await fetch(addr, {
     method: "POST",
     headers: { "Content-type": "application/json" },
-    body: JSON.stringify(reqData),
-  });
+    body: JSON.stringify(body),
+  })
 }
 
-async function getNotes(personId) {
-  let addr = `${backendAddr}/${eventEndpoints.notes}/${personId}`;
-  const res = await fetch(addr, {
-    method: "GET",
-  });
-  const data = await res.json();
-  return data.notes;
-}
-
-async function postNote(personId, note) {
-  const reqData = {
-    context: note,
-  };
-  console.log(reqData);
-
+async function createNote(personId, note) {
   await fetch(`${backendAddr}/${eventEndpoints.notes}/${personId}`, {
     method: "POST",
     headers: { "Content-type": "application/json" },
-    body: JSON.stringify(reqData),
-  });
+    body: JSON.stringify({
+      what: note,
+    }),
+  })
+}
+
+async function updatePersonDetails(personId, newDetails) {
+  await fetch(`${backendAddr}/${eventEndpoints.personDetails}/${personId}`, {
+    method: "PATCH",
+    headers: { "Content-type": "application/json" },
+    body: JSON.stringify(newDetails),
+  })
 }
 
 async function getMostSeen(limit) {
@@ -90,8 +79,7 @@ async function getMostSeen(limit) {
   const res = await fetch(addr, {
     method: "GET",
   });
-  const data = await res.json();
-  return data.data;
+  return await res.json();
 }
 
 async function getToSee(limit) {
@@ -102,17 +90,18 @@ async function getToSee(limit) {
   const res = await fetch(addr, {
     method: "GET",
   });
-  const data = await res.json();
-  return data.to_see;
+  return await res.json();
 }
 
 export {
-  postEvent,
+  createEvent,
   getPeople,
-  getEvents,
+  getMeetings,
   getPlans,
+  getPersonDetails,
+  updatePersonDetails,
   getNotes,
-  postNote,
+  createNote,
   getMostSeen,
   getToSee,
 };

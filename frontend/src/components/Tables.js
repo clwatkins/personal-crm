@@ -5,7 +5,7 @@ import {
   TableHead,
   TableBody,
 } from "@mui/material";
-import { getEvents, getPlans, getNotes, getToSee } from "../Api";
+import { getMeetings, getPlans, getNotes, getToSee } from "../Api";
 import React, { useState, useEffect } from "react";
 
 var dateFormat = require("dateformat");
@@ -15,12 +15,12 @@ const EventsTable = () => {
   const [eventsList, setEventsList] = useState([]);
 
   useEffect(() => {
-    const getEventsFromApi = async () => {
-      const events = await getEvents(10);
+    const getMeetingsFromApi = async () => {
+      const events = await getMeetings(10);
       setEventsList(events);
     };
 
-    getEventsFromApi();
+    getMeetingsFromApi();
   }, []);
 
   return (
@@ -34,9 +34,9 @@ const EventsTable = () => {
       </TableHead>
       <TableBody>
         {eventsList.map((event) => (
-          <TableRow key={event.local_query_id}>
+          <TableRow key={event.id}>
             <TableCell component="th" scope="row">
-              {event.person_name}
+              {event.person.name}
             </TableCell>
             <TableCell>{event.what}</TableCell>
             <TableCell>
@@ -72,9 +72,9 @@ const PlansTable = () => {
       </TableHead>
       <TableBody>
         {plansList.map((plan) => (
-          <TableRow key={plan.local_query_id}>
+          <TableRow key={plan.id}>
             <TableCell component="th" scope="row">
-              {plan.person_name}
+              {plan.person.name}
             </TableCell>
             <TableCell>{plan.what}</TableCell>
             <TableCell>
@@ -96,7 +96,9 @@ const NotesTable = (props) => {
       setNotesList(notes);
     };
 
-    getNotesFromApi(props.personId);
+    if (props.personId > 0) {
+      getNotesFromApi(props.personId);
+    }
   }, [props]);
 
   return (
@@ -109,7 +111,7 @@ const NotesTable = (props) => {
       </TableHead>
       <TableBody>
         {notesList.map((note) => (
-          <TableRow key={note.local_query_id}>
+          <TableRow key={note.id}>
             <TableCell>
               {dateFormat(new Date(note.when), dateFormatStr)}
             </TableCell>
@@ -143,13 +145,14 @@ const ToSeeTable = () => {
         </TableRow>
       </TableHead>
       <TableBody>
-        {toSeeList.map((toSee) => (
-          <TableRow key={toSee.local_query_id}>
-            <TableCell>{toSee.name}</TableCell>
-            <TableCell>{toSee.days_since_last_seen}</TableCell>
-            <TableCell>{toSee.total_meetings}</TableCell>
-          </TableRow>
-        ))}
+        {
+          toSeeList.map((toSee) => (
+            <TableRow key={toSee.id}>
+              <TableCell>{toSee.name}</TableCell>
+              <TableCell>{toSee.days_since_last_seen}</TableCell>
+              <TableCell>{toSee.total_meetings}</TableCell>
+            </TableRow>))
+        }
       </TableBody>
     </Table>
   );

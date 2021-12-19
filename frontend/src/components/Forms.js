@@ -1,16 +1,67 @@
-import { postEvent, postNote } from "../Api";
+import { getPersonDetails, updatePersonDetails, createEvent, createNote } from "../Api";
 
-import { Button, TextField } from "@mui/material";
+import { Button, Box, TextField } from "@mui/material";
 import CreatableSelect from "react-select/creatable";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { PersonSelect } from "./PersonSelect";
+
+const PersonDetailsForm = (props) => {
+  const [detailsProps, setDetailsProps] = useState({ name: '', first_met_comment: '' });
+
+  useEffect(() => {
+    const getPersonDetailsFromApi = async (personId) => {
+      const details = await getPersonDetails(personId);
+      setDetailsProps(details);
+    };
+
+    if (props.personId > 0) {
+      getPersonDetailsFromApi(props.personId);
+    }
+  }, [props]);
+
+  const handleFormSubmit = async (e) => {
+    updatePersonDetails(props.personId, detailsProps);
+  };
+
+  return (
+    <div>
+      <Box
+        component="form"
+        sx={{
+          '& > :not(style)': { m: 1, width: '25ch' },
+        }}
+        noValidate
+        autoComplete="off"
+      >
+        <TextField
+          variant="standard"
+          margin="normal"
+          label={"Their name"}
+          value={detailsProps.name}
+          onChange={(e) => setDetailsProps({ ...detailsProps, name: e.target.value })}
+        />
+        <TextField
+          variant="standard"
+          margin="normal"
+          label={"How you first met them"}
+          value={detailsProps.first_met_comment}
+          onChange={(e) => setDetailsProps({ ...detailsProps, first_met_comment: e.target.value })}
+        />
+        </Box>
+        <br />
+        <Button variant="contained" color="primary" onClick={handleFormSubmit}>
+          Update me!
+        </Button>
+    </div >
+  );
+};
 
 const NoteForm = (props) => {
   const [textValue, setTextValue] = useState("");
 
   const handleFormSubmit = async (e) => {
-    postNote(props.personId, textValue);
+    createNote(props.personId, textValue);
 
     setTextValue("");
   };
@@ -44,9 +95,18 @@ const BasePersonCommentForm = (personPrompt, commentPrompt, eventType) => {
   const [textValue, setTextValue] = useState("");
 
   const handleFormSubmit = async (e) => {
-    postEvent(
+    var mappedPeopleValues;
+
+    if (eventType === 'add') {
+      mappedPeopleValues = selectedPeopleValues.map(({ label }) => label);
+    }
+    else {
+      mappedPeopleValues = selectedPeopleValues.map(({ value }) => value);
+    }
+
+    createEvent(
       eventType,
-      selectedPeopleValues.map(({ value }) => value).join(),
+      mappedPeopleValues,
       textValue
     );
 
@@ -118,4 +178,4 @@ const SeeForm = () => {
   );
 };
 
-export { AddForm, PlanForm, SeeForm, NoteForm };
+export { AddForm, PlanForm, SeeForm, NoteForm, PersonDetailsForm };

@@ -3,8 +3,6 @@ RUN apt-get update && apt-get install -y netcat build-essential musl-dev libffi-
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-ENV FLASK_HOST=0.0.0.0
-ENV FLASK_PORT=5000
 EXPOSE 5000
 
 WORKDIR /usr/src/app
