@@ -138,6 +138,31 @@ def get_analytics_most_seen(limit: Optional[int] = DEFAULT_LIMIT, db: Session = 
     return [{"id": i, "name": name, "count": count} for i, (name, count) in enumerate(most_common_count)]
 
 
+@app.get("/analytics/persons-summary/", response_model=List[schemas.PersonsSummaryResponse])
+def get_analytics_persons_summary(limit: Optional[int] = DEFAULT_LIMIT, db: Session = Depends(get_db)):
+    persons = crud.get_persons(db, limit=100_000)
+
+    persons_summary = []
+    for person in persons:
+        last_meeting = None
+        if person.meetings:
+            last_meeting = sorted(person.meetings, key=lambda m: m.id, reverse=True)[0]
+
+        persons_summary.append(
+            {
+                'id': person.id,
+                'name': person.name,
+                'first_met_at': person.first_met,
+                'first_met_comment': person.first_met_comment,
+                'num_meetings': len(person.meetings),
+                'last_seen_at': last_meeting.when if last_meeting else None,
+                'last_seen': last_meeting.what if last_meeting else None
+            }
+        )
+
+    return sorted(persons_summary[:limit], key=lambda p: p['id'], reverse=True)
+
+
 @app.get("/analytics/to-see/", response_model=List[schemas.ToSeeResponse])
 def get_analytics_to_see(limit: Optional[int] = DEFAULT_LIMIT, db: Session = Depends(get_db)):
     min_meetings = 3
@@ -185,4 +210,4 @@ def get_analytics_to_see(limit: Optional[int] = DEFAULT_LIMIT, db: Session = Dep
         key=lambda d: math.log(d["days_since_last_seen"] + eps) * math.log(d["total_meetings"]),
     )
     # Truncate list to desired limit
-    return to_see[:limit or DEFAULT_LIMIT]
+    return to_see[:limit]

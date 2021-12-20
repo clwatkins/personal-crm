@@ -130,3 +130,13 @@ class ToSeeResponse(BaseModel):
     name: str
     total_meetings: int
     days_since_last_seen: int
+
+
+class PersonsSummaryResponse(BaseModel):
+    id: int
+    name: str
+    first_met_at: datetime
+    first_met_comment: str
+    num_meetings: int
+    last_seen_at: Optional[datetime]
+    last_seen: Optional[str]

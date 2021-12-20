@@ -14,7 +14,7 @@ import {
 import { getMostSeen, getPersonTimeline } from "../../Api";
 
 var dateFormat = require("dateformat");
-const dateFormatStr = "yyyy-mm-dd";
+const dateFormatLong = "yyyy-mm-dd";
 
 const MostSeenBarChart = () => {
   const [mostSeenData, setMostSeenData] = useState([]);
@@ -68,8 +68,8 @@ const PersonTimelineChart = (props) => {
 
   var formatXAxis = (dateObj) => {
     console.log(dateObj);
-    console.log(dateFormat(dateObj, dateFormatStr));
-    return dateFormat(dateObj, dateFormatStr);
+    console.log(dateFormat(dateObj, dateFormatLong));
+    return dateFormat(dateObj, dateFormatLong);
   };
 
   return (

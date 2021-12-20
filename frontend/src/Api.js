@@ -10,6 +10,7 @@ const eventEndpoints = {
   personDetails: "person",
   analyticsMostSeen: "analytics/most-seen",
   analyticsToSee: "analytics/to-see",
+  analyticsPersonsSummary: "analytics/persons-summary",
 };
 
 // Event type == persons, plans, meetings
@@ -27,6 +28,8 @@ async function getInfoWithLimit(eventType, limit) {
 const getPeople = (limit) => getInfoWithLimit("add", limit);
 const getPlans = (limit) => getInfoWithLimit("plan", limit);
 const getMeetings = (limit) => getInfoWithLimit("see", limit);
+const getPersonsSummary = (limit) =>
+  getInfoWithLimit("analyticsPersonsSummary", limit);
 
 // Event type == persons, notes
 async function getInfoForPerson(eventType, personId) {
@@ -101,6 +104,7 @@ export {
   getPlans,
   getPersonDetails,
   updatePersonDetails,
+  getPersonsSummary,
   getNotes,
   createNote,
   getMostSeen,
