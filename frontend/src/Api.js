@@ -24,33 +24,34 @@ async function getInfoWithLimit(eventType, limit) {
   return await res.json();
 }
 
-const getPeople = (limit) => getInfoWithLimit('add', limit);
-const getPlans = (limit) => getInfoWithLimit('plan', limit);
-const getMeetings = (limit) => getInfoWithLimit('see', limit);
+const getPeople = (limit) => getInfoWithLimit("add", limit);
+const getPlans = (limit) => getInfoWithLimit("plan", limit);
+const getMeetings = (limit) => getInfoWithLimit("see", limit);
 
 // Event type == persons, notes
 async function getInfoForPerson(eventType, personId) {
-  const res = await fetch(`${backendAddr}/${eventEndpoints[eventType]}/${personId}`, {
-    method: "GET",
-  });
+  const res = await fetch(
+    `${backendAddr}/${eventEndpoints[eventType]}/${personId}`,
+    {
+      method: "GET",
+    }
+  );
   return await res.json();
 }
 
-var getPersonDetails = (personId) => getInfoForPerson('personDetails', personId);
-var getNotes = (personId) => getInfoForPerson('notes', personId);
+var getPersonDetails = (personId) =>
+  getInfoForPerson("personDetails", personId);
+var getNotes = (personId) => getInfoForPerson("notes", personId);
 
 async function createEvent(eventType, persons, text) {
   let addr = `${backendAddr}/${eventEndpoints[eventType]}`;
-  let body = { persons: persons, what: text};
-
-  console.log(addr);
-  console.log(body);
+  let body = { persons: persons, what: text };
 
   await fetch(addr, {
     method: "POST",
     headers: { "Content-type": "application/json" },
     body: JSON.stringify(body),
-  })
+  });
 }
 
 async function createNote(personId, note) {
@@ -60,7 +61,7 @@ async function createNote(personId, note) {
     body: JSON.stringify({
       what: note,
     }),
-  })
+  });
 }
 
 async function updatePersonDetails(personId, newDetails) {
@@ -68,7 +69,7 @@ async function updatePersonDetails(personId, newDetails) {
     method: "PATCH",
     headers: { "Content-type": "application/json" },
     body: JSON.stringify(newDetails),
-  })
+  });
 }
 
 async function getMostSeen(limit) {

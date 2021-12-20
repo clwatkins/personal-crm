@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { AddForm, PlanForm, SeeForm } from "./Forms";
+import { PlanForm, SeeForm } from "./Forms";
 import FormControlBar from "./FormControlBar";
 
 const FormController = () => {
@@ -10,8 +10,6 @@ const FormController = () => {
     switch (formBarValue) {
       case "see":
         return <SeeForm />;
-      case "add":
-        return <AddForm />;
       case "plan":
         return <PlanForm />;
       default:
