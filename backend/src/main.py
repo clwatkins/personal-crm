@@ -51,13 +51,16 @@ def get_persons(limit: Optional[int] = DEFAULT_LIMIT, db: Session = Depends(get_
     return persons
 
 
-@app.post("/persons/", status_code=status.HTTP_201_CREATED)
+@app.post("/persons/", response_model=List[schemas.Person])
 def create_persons(
     request: schemas.PersonsCreateRequest, db: Session = Depends(get_db)
 ):
     crud.create_persons(
         db, names=request.persons, first_met_comment=request.what
     )
+    new_persons = crud.get_people_by_name(db=db, person_names=request.persons)
+
+    return new_persons
 
 
 @app.get("/person/{person_id}", response_model=schemas.Person)
@@ -160,7 +163,27 @@ def get_analytics_persons_summary(limit: Optional[int] = DEFAULT_LIMIT, db: Sess
             }
         )
 
-    return sorted(persons_summary[:limit], key=lambda p: p['id'], reverse=True)
+    return sorted(persons_summary, key=lambda p: p['last_seen_at'] or p['first_met_at'], reverse=True)[:limit]
+
+
+@app.get("/analytics/events-summary/", response_model=List[schemas.EventsSummaryResponse])
+def get_analytics_events_summary(limit: Optional[int] = DEFAULT_LIMIT, db: Session = Depends(get_db)):
+    meetings = crud.get_meetings(db, limit=100_000)
+
+    # Reduce from people-event cardinality to event cardinality
+    meetings_summary = {}
+    for meeting in meetings:
+        if meeting.meeting_hash in meetings_summary:
+            meetings_summary[meeting.meeting_hash]['who'].append(meeting.person.name)
+        else:
+            meetings_summary[meeting.meeting_hash] = {
+                'hash_id': meeting.meeting_hash,
+                'what': meeting.what,
+                'when': meeting.when,
+                'who': [meeting.person.name]
+            }
+
+    return sorted(list(meetings_summary.values()), key=lambda m: m['when'], reverse=True)[:limit]
 
 
 @app.get("/analytics/to-see/", response_model=List[schemas.ToSeeResponse])

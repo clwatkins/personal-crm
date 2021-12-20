@@ -15,7 +15,7 @@ def _get_hash(text: str) -> str:
 # PERSONS
 # ============
 def get_persons(db: Session, limit: int):
-    return db.query(models.Person).limit(limit).all()
+    return db.query(models.Person).order_by(models.Person.id.desc()).limit(limit).all()
 
 
 def get_person(db: Session, person_id: int):
@@ -44,12 +44,6 @@ def create_persons(db: Session, names: List[str], first_met_comment: Optional[st
         ]
     )
     db.commit()
-
-    # Get IDs of people just added
-    person_ids = [person.id for person in get_people_by_name(db=db, person_names=names)]
-
-    # Add events for people
-    create_meeting(db, person_ids=person_ids, what=first_met_comment)
 
 
 # ============

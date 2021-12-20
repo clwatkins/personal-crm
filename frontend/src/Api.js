@@ -11,6 +11,7 @@ const eventEndpoints = {
   analyticsMostSeen: "analytics/most-seen",
   analyticsToSee: "analytics/to-see",
   analyticsPersonsSummary: "analytics/persons-summary",
+  analyticsEventsSummary: "analytics/events-summary",
 };
 
 // Event type == persons, plans, meetings
@@ -30,6 +31,8 @@ const getPlans = (limit) => getInfoWithLimit("plan", limit);
 const getMeetings = (limit) => getInfoWithLimit("see", limit);
 const getPersonsSummary = (limit) =>
   getInfoWithLimit("analyticsPersonsSummary", limit);
+const getEventsSummary = (limit) =>
+  getInfoWithLimit("analyticsEventsSummary", limit);
 
 // Event type == persons, notes
 async function getInfoForPerson(eventType, personId) {
@@ -50,11 +53,13 @@ async function createEvent(eventType, persons, text) {
   let addr = `${backendAddr}/${eventEndpoints[eventType]}`;
   let body = { persons: persons, what: text };
 
-  await fetch(addr, {
+  const res = await fetch(addr, {
     method: "POST",
     headers: { "Content-type": "application/json" },
     body: JSON.stringify(body),
   });
+
+  return await res.json();
 }
 
 async function createNote(personId, note) {
@@ -99,6 +104,7 @@ async function getToSee(limit) {
 
 export {
   createEvent,
+  getEventsSummary,
   getPeople,
   getMeetings,
   getPlans,

@@ -8,6 +8,7 @@ import {
 import {
   getMeetings,
   getPersonsSummary,
+  getEventsSummary,
   getPlans,
   getNotes,
   getToSee,
@@ -29,7 +30,7 @@ const dateOrNull = (date, longFormat) => {
   }
 };
 
-const EventsTable = () => {
+const LatestEventsTable = () => {
   const [eventsList, setEventsList] = useState([]);
 
   useEffect(() => {
@@ -213,4 +214,45 @@ const PersonsSummaryTable = () => {
   );
 };
 
-export { EventsTable, PersonsSummaryTable, PlansTable, NotesTable, ToSeeTable };
+const EventsSummaryTable = () => {
+  const [eventsSummaryList, setEventsSummaryList] = useState([]);
+
+  useEffect(() => {
+    const getEventsSummaryFromApi = async () => {
+      const eventsSummary = await getEventsSummary(100);
+      setEventsSummaryList(eventsSummary);
+    };
+
+    getEventsSummaryFromApi();
+  }, []);
+
+  return (
+    <Table aria-label="simple table">
+      <TableHead>
+        <TableRow>
+          <TableCell>What</TableCell>
+          <TableCell>When</TableCell>
+          <TableCell>Who</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {eventsSummaryList.map((eventSummary) => (
+          <TableRow key={eventSummary.hash_id}>
+            <TableCell>{eventSummary.what}</TableCell>
+            <TableCell>{dateOrNull(eventSummary.when, true)}</TableCell>
+            <TableCell>{eventSummary.who.join(", ")}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+};
+
+export {
+  LatestEventsTable,
+  PersonsSummaryTable,
+  EventsSummaryTable,
+  PlansTable,
+  NotesTable,
+  ToSeeTable,
+};

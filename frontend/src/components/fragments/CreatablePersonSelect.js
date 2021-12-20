@@ -28,22 +28,35 @@ const CreatablePersonSelect = (personPrompt, commentPrompt, eventType) => {
   };
 
   const handleFormSubmit = async (e) => {
-    var existingPeopleValues = selectedPeopleList.filter(
-      (person) => !("__isNew__" in person)
-    );
-    var newPeopleValues = selectedPeopleList.filter(
-      (person) => "__isNew__" in person
-    );
+    // Extract new vs existing people from selected list
+    // Existing people have IDs selected
+    var existingSelectedPeopleIds = selectedPeopleList
+      .filter((person) => !("__isNew__" in person))
+      .map(({ value }) => value);
 
-    existingPeopleValues = existingPeopleValues.map(({ value }) => value);
-    newPeopleValues = newPeopleValues.map(({ label }) => label);
+    // New people names
+    var newSelectedPeopleLabels = selectedPeopleList
+      .filter((person) => "__isNew__" in person)
+      .map(({ label }) => label);
 
-    if (existingPeopleValues.length > 0) {
-      createEvent(eventType, existingPeopleValues, textValue);
+    // If there are new people, add them to the database
+    var newPeople = [];
+    if (newSelectedPeopleLabels.length > 0) {
+      newPeople = await createEvent("add", newSelectedPeopleLabels, textValue);
     }
-    if (newPeopleValues.length > 0) {
-      createEvent("add", newPeopleValues, textValue);
-    }
+
+    console.log(newPeople);
+
+    // This returns the new people objects -- merge their ids to the existing
+    // list of selected ids
+    var combinedPeopleIds = [
+      ...existingSelectedPeopleIds,
+      ...newPeople.map(({ id }) => id),
+    ];
+    console.log(combinedPeopleIds);
+
+    // Submit to create one joint event with all people
+    createEvent(eventType, combinedPeopleIds, textValue);
   };
 
   return (

@@ -10,20 +10,27 @@ const FormControlBarButton = styled(ToggleButton)(() => ({
   },
 }));
 
-const FormControlBar = ({ formBarValue, setFormBarValue }) => {
+const FormControlBar = ({
+  formBarValues,
+  selectedFormBarValue,
+  setSelectedFormBarValue,
+}) => {
   const handleChangeFormBarValue = (event, newValue) => {
-    setFormBarValue(newValue);
+    setSelectedFormBarValue(newValue);
   };
 
   return (
     <ToggleButtonGroup
-      value={formBarValue}
+      value={selectedFormBarValue}
       exclusive
       onChange={handleChangeFormBarValue}
       aria-label="text alignment"
     >
-      <FormControlBarButton value="see">Seeing</FormControlBarButton>
-      <FormControlBarButton value="plan">Planning</FormControlBarButton>
+      {formBarValues.map((formBarValue, v) => (
+        <FormControlBarButton key={v} value={formBarValue.value}>
+          {formBarValue.label}
+        </FormControlBarButton>
+      ))}
     </ToggleButtonGroup>
   );
 };

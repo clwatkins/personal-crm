@@ -140,3 +140,10 @@ class PersonsSummaryResponse(BaseModel):
     num_meetings: int
     last_seen_at: Optional[datetime]
     last_seen: Optional[str]
+
+
+class EventsSummaryResponse(BaseModel):
+    hash_id: str
+    what: str
+    when: datetime
+    who: List[str]

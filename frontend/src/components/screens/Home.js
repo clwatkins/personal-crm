@@ -1,8 +1,10 @@
 import React from "react";
-import { Container, Grid } from "@mui/material";
+import { Container, Grid, Typography } from "@mui/material";
 
-import FormController from "../fragments/FormController";
-import { PersonsSummaryTable } from "../fragments/Tables";
+import {
+  PersonFormController,
+  SummaryTableController,
+} from "../fragments/ModalControllers";
 
 function Main() {
   return (
@@ -11,10 +13,12 @@ function Main() {
         <br />
         <Grid container spacing={1}>
           <Grid item xs={12}>
-            <FormController />
+            <PersonFormController />
           </Grid>
           <Grid item xs={12}>
-            <PersonsSummaryTable />
+            <Typography variant="h6">Data summary...</Typography>
+            <br />
+            <SummaryTableController />
           </Grid>
         </Grid>
       </Container>
