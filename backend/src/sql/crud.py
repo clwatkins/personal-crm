@@ -22,6 +22,10 @@ def get_person(db: Session, person_id: int):
     return db.query(models.Person).filter(models.Person.id == person_id).first()
 
 
+def get_people_by_name(db: Session, person_names: List[str]):
+    return db.query(models.Person).filter(models.Person.name.in_(person_names)).all()
+
+
 def update_person(db: Session, person_id: int, name: str, first_met_comment: str):
     person = get_person(db, person_id)
     person.name = name
@@ -39,8 +43,13 @@ def create_persons(db: Session, names: List[str], first_met_comment: Optional[st
             for name in names
         ]
     )
-
     db.commit()
+
+    # Get IDs of people just added
+    person_ids = [person.id for person in get_people_by_name(db=db, person_names=names)]
+
+    # Add events for people
+    create_meeting(db, person_ids=person_ids, what=first_met_comment)
 
 
 # ============
