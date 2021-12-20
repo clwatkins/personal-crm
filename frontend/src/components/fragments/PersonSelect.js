@@ -1,7 +1,7 @@
 import Select from "react-select";
 import React, { useState, useEffect } from "react";
 
-import { getPeople } from "../Api";
+import { getPeople } from "../../Api";
 
 const PersonSelect = (props) => {
   const [peopleList, setPeopleList] = useState([]);

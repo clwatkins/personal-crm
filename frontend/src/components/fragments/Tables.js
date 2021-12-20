@@ -5,7 +5,7 @@ import {
   TableHead,
   TableBody,
 } from "@mui/material";
-import { getMeetings, getPlans, getNotes, getToSee } from "../Api";
+import { getMeetings, getPlans, getNotes, getToSee } from "../../Api";
 import React, { useState, useEffect } from "react";
 
 var dateFormat = require("dateformat");
@@ -145,14 +145,13 @@ const ToSeeTable = () => {
         </TableRow>
       </TableHead>
       <TableBody>
-        {
-          toSeeList.map((toSee) => (
-            <TableRow key={toSee.id}>
-              <TableCell>{toSee.name}</TableCell>
-              <TableCell>{toSee.days_since_last_seen}</TableCell>
-              <TableCell>{toSee.total_meetings}</TableCell>
-            </TableRow>))
-        }
+        {toSeeList.map((toSee) => (
+          <TableRow key={toSee.id}>
+            <TableCell>{toSee.name}</TableCell>
+            <TableCell>{toSee.days_since_last_seen}</TableCell>
+            <TableCell>{toSee.total_meetings}</TableCell>
+          </TableRow>
+        ))}
       </TableBody>
     </Table>
   );

@@ -1,17 +1,11 @@
-import {
-  Container,
-  Card,
-  CardContent,
-  Grid,
-  Typography,
-} from "@mui/material";
+import { Container, Card, CardContent, Grid, Typography } from "@mui/material";
 import { indigo } from "@mui/material/colors";
 
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import React, { useState, useEffect } from "react";
 
-import { getMostSeen } from "../Api";
-import { EventsTable, PlansTable, ToSeeTable } from "./Tables";
+import { getMostSeen } from "../../Api";
+import { EventsTable, PlansTable, ToSeeTable } from "../fragments/Tables";
 
 const MostSeenBar = () => {
   const [mostSeenData, setMostSeenData] = useState([]);

@@ -1,17 +1,12 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
-import {
-  AppBar,
-  Button,
-  CssBaseline,
-  Toolbar
-} from "@mui/material";
+import { AppBar, Button, CssBaseline, Toolbar } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import Analytics from "./components/Analytics";
-import Main from "./components/Main";
-import People from "./components/People";
+import Analytics from "./components/screens/Analytics";
+import Home from "./components/screens/Home";
+import People from "./components/screens/People";
 
 const HeaderButton = styled(Button)(() => ({
   color: "white",
@@ -46,7 +41,7 @@ const App = () => {
             <People />
           </Route>
           <Route path="/">
-            <Main />
+            <Home />
           </Route>
         </Switch>
       </main>

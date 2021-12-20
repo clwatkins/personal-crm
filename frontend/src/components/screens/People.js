@@ -1,16 +1,10 @@
-import {
-  Container,
-  Card,
-  CardContent,
-  Grid,
-  Typography,
-} from "@mui/material";
+import { Container, Card, CardContent, Grid, Typography } from "@mui/material";
 
 import React, { useState } from "react";
 
-import { PersonSelect } from "./PersonSelect";
-import { NotesTable } from "./Tables";
-import { NoteForm, PersonDetailsForm } from "./Forms";
+import { PersonSelect } from "../fragments/PersonSelect";
+import { NotesTable } from "../fragments/Tables";
+import { NoteForm, PersonDetailsForm } from "../fragments/Forms";
 
 const People = () => {
   const [selectedPersonValue, setSelectedPersonValue] = useState({ value: -1 });

@@ -1,7 +1,7 @@
 import React from "react";
 import { Container } from "@mui/material";
 
-import FormController from "./FormController";
+import FormController from "../fragments/FormController";
 
 function Main() {
   return (

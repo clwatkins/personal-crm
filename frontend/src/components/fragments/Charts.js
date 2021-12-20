@@ -11,7 +11,7 @@ import {
   Tooltip,
 } from "recharts";
 
-import { getMostSeen, getPersonTimeline } from "../Api";
+import { getMostSeen, getPersonTimeline } from "../../Api";
 
 var dateFormat = require("dateformat");
 const dateFormatStr = "yyyy-mm-dd";

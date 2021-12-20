@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { Button, TextField } from "@mui/material";
 import CreatableSelect from "react-select/creatable";
-import { getPeople, createEvent } from "../Api";
+import { getPeople, createEvent } from "../../Api";
 
 const CreatablePersonSelect = (personPrompt, commentPrompt, eventType) => {
   const [selectedPeopleList, setSelectedPeopleList] = useState([]);

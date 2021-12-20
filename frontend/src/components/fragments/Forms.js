@@ -1,4 +1,4 @@
-import { getPersonDetails, updatePersonDetails, createNote } from "../Api";
+import { getPersonDetails, updatePersonDetails, createNote } from "../../Api";
 
 import { Button, Box, TextField } from "@mui/material";
 import React, { useState, useEffect } from "react";
