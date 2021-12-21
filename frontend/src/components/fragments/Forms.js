@@ -1,14 +1,23 @@
 import { getPersonDetails, updatePersonDetails, createNote } from "../../Api";
 
-import { Button, Box, TextField } from "@mui/material";
+import {
+  Button,
+  Grid,
+  Box,
+  TextField,
+  Rating,
+  Typography,
+} from "@mui/material";
+import FlagIcon from "@mui/icons-material/Flag";
+import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
 import React, { useState, useEffect } from "react";
-
 import { CreatablePersonSelect } from "./CreatablePersonSelect";
 
 const PersonDetailsForm = (props) => {
   const [detailsProps, setDetailsProps] = useState({
     name: "",
     first_met_comment: "",
+    priority: 2,
   });
 
   useEffect(() => {
@@ -28,36 +37,56 @@ const PersonDetailsForm = (props) => {
 
   return (
     <div>
-      <Box
-        component="form"
-        sx={{
-          "& > :not(style)": { m: 1, width: "25ch" },
-        }}
-        noValidate
-        autoComplete="off"
-      >
-        <TextField
-          variant="standard"
-          margin="normal"
-          label={"Their name"}
-          value={detailsProps.name}
-          onChange={(e) =>
-            setDetailsProps({ ...detailsProps, name: e.target.value })
-          }
-        />
-        <TextField
-          variant="standard"
-          margin="normal"
-          label={"How you first met them"}
-          value={detailsProps.first_met_comment}
-          onChange={(e) =>
-            setDetailsProps({
-              ...detailsProps,
-              first_met_comment: e.target.value,
-            })
-          }
-        />
-      </Box>
+      <Grid container spacing={3}>
+        <Grid item xs={4}>
+          <TextField
+            variant="standard"
+            margin="normal"
+            label={"Their name"}
+            fullWidth={true}
+            value={detailsProps.name}
+            onChange={(e) =>
+              setDetailsProps({ ...detailsProps, name: e.target.value })
+            }
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <TextField
+            variant="standard"
+            margin="normal"
+            label={"How you first met them"}
+            fullWidth={true}
+            value={detailsProps.first_met_comment}
+            onChange={(e) =>
+              setDetailsProps({
+                ...detailsProps,
+                first_met_comment: e.target.value,
+              })
+            }
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <Box
+            sx={{
+              "& > legend": { mt: 2 },
+            }}
+          >
+            <Typography component="legend">Their priority</Typography>
+            <Rating
+              value={detailsProps.priority}
+              max={3}
+              icon={<FlagIcon fontSize="inherit" />}
+              emptyIcon={<FlagOutlinedIcon fontSize="inherit" />}
+              onChange={(e, newValue) =>
+                setDetailsProps({
+                  ...detailsProps,
+                  priority: newValue,
+                })
+              }
+            />
+          </Box>
+        </Grid>
+      </Grid>
       <br />
       <Button variant="contained" color="primary" onClick={handleFormSubmit}>
         Update me!

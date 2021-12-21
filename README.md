@@ -46,7 +46,7 @@ Note: password is fake, obvs
 ```shell
 sudo docker pull postgres
 sudo docker run --name personal-crm-db -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 --net personal-crm-net -it postgres
-export FLASK_DATABASE_URI=postgresql://postgres:mysecretpassword@localhost:5432/postgres
+export SQLALCHEMY_DATABASE_URI=postgresql://postgres:mysecretpassword@localhost:5432/postgres
 python manage.py create-db
 python manage.py seed-db
 ```

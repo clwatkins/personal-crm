@@ -78,6 +78,7 @@ def update_person(
         person_id=person_id,
         name=request.name,
         first_met_comment=request.first_met_comment,
+        priority=request.priority
     )
 
 

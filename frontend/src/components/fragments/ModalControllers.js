@@ -3,17 +3,20 @@ import React, { useState } from "react";
 import { PlanForm, SeeForm } from "./Forms";
 import { EventsSummaryTable, PersonsSummaryTable } from "./Tables";
 
-import FormControlBar from "./FormControlBar";
+import {
+  ModalControlButtons,
+  ModalControlButtonIcons,
+} from "./ModalControlBars";
 
 const PersonFormController = () => {
-  const formBarValues = [
+  const values = [
     { value: "see", label: "Seeing" },
     { value: "plan", label: "Planning" },
   ];
-  const [selectedFormBarValue, setSelectedFormBarValue] = useState("see");
+  const [selectedValue, setSelectedValue] = useState("see");
 
-  const chooseFormToRender = (selectedFormBarValue) => {
-    switch (selectedFormBarValue) {
+  const chooseFormToRender = (selectedValue) => {
+    switch (selectedValue) {
       case "see":
         return <SeeForm />;
       case "plan":
@@ -25,26 +28,22 @@ const PersonFormController = () => {
 
   return (
     <div>
-      <FormControlBar
-        formBarValues={formBarValues}
-        selectedFormBarValue={selectedFormBarValue}
-        setSelectedFormBarValue={setSelectedFormBarValue}
+      <ModalControlButtons
+        buttonValues={values}
+        selectedValue={selectedValue}
+        setSelectedValue={setSelectedValue}
       />
-      {chooseFormToRender(selectedFormBarValue)}
+      {chooseFormToRender(selectedValue)}
       <br />
     </div>
   );
 };
 
 const SummaryTableController = () => {
-  const formBarValues = [
-    { value: "events", label: "Events" },
-    { value: "people", label: "People" },
-  ];
-  const [selectedFormBarValue, setSelectedFormBarValue] = useState("events");
+  const [selectedValue, setSelectedValue] = useState("events");
 
-  const chooseTableToRender = (selectedFormBarValue) => {
-    switch (selectedFormBarValue) {
+  const chooseTableToRender = (selectedValue) => {
+    switch (selectedValue) {
       case "people":
         return <PersonsSummaryTable />;
       default:
@@ -54,12 +53,11 @@ const SummaryTableController = () => {
 
   return (
     <div>
-      <FormControlBar
-        formBarValues={formBarValues}
-        selectedFormBarValue={selectedFormBarValue}
-        setSelectedFormBarValue={setSelectedFormBarValue}
+      <ModalControlButtonIcons
+        selectedValue={selectedValue}
+        setSelectedValue={setSelectedValue}
       />
-      {chooseTableToRender(selectedFormBarValue)}
+      {chooseTableToRender(selectedValue)}
       <br />
     </div>
   );

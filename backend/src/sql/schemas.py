@@ -77,12 +77,14 @@ class PersonsCreateRequest(BaseModel):
 class PersonUpdateRequest(BaseModel):
     name: str
     first_met_comment: Optional[str] = None
+    priority: Optional[int] = None
 
 
 class PersonCreate(BaseModel):
     name: str
     first_met: Optional[datetime]
     first_met_comment: Optional[str] = None
+    priority: Optional[int] = None
 
     class Config:
         orm_mode = True
@@ -91,14 +93,13 @@ class PersonCreate(BaseModel):
 class PersonBase(PersonCreate):
     id: int
     first_met: datetime
+    priority: int
 
 
 # ============
 # FINAL SCHEMAS
 # ============
 class Person(PersonBase):
-    id: int
-    first_met: datetime
     meetings: List[MeetingBase] = []
     plans: List[PlanBase] = []
     notes: List[NoteBase] = []

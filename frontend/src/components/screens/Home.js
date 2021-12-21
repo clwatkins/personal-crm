@@ -16,7 +16,9 @@ function Main() {
             <PersonFormController />
           </Grid>
           <Grid item xs={12}>
-            <Typography variant="h6">Data summary...</Typography>
+            <Typography variant="h6" display="inline">
+              Data summary...
+            </Typography>
             <br />
             <SummaryTableController />
           </Grid>

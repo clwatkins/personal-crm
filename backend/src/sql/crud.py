@@ -26,10 +26,11 @@ def get_people_by_name(db: Session, person_names: List[str]):
     return db.query(models.Person).filter(models.Person.name.in_(person_names)).all()
 
 
-def update_person(db: Session, person_id: int, name: str, first_met_comment: str):
+def update_person(db: Session, person_id: int, name: str, first_met_comment: str, priority: int):
     person = get_person(db, person_id)
     person.name = name
     person.first_met_comment = first_met_comment
+    person.priority = priority
     db.commit()
 
 

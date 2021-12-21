@@ -2,8 +2,10 @@
 .idea
 *.db
 .env.prod
-**/albemic/*
+alembic/
+migrations/
 alembic.ini
+jsconfig.json
 
 # Created by .ignore support plugin (hsz.mobi)
 ### Node template
