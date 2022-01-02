@@ -12,7 +12,7 @@ class Person(Base):
     name = Column(Text, unique=True, nullable=False)
     first_met = Column(DateTime, unique=False, nullable=False, default=datetime.utcnow)
     first_met_comment = Column(Text, unique=False, nullable=True)
-    priority = Column(Integer, unique=False, nullable=False, default=2)
+    priority = Column(Integer, unique=False, nullable=True, default=2)
 
     meetings = relationship("Meeting", backref="person")
     plans = relationship("Plan", backref="person")
