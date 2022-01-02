@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-connect_args = None
+connect_args = {}
 if 'sqlite' in os.environ["SQLALCHEMY_DATABASE_URI"]:
     connect_args = {"check_same_thread": False}
 

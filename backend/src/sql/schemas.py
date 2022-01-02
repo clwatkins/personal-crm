@@ -10,7 +10,7 @@ from pydantic import BaseModel
 class MeetingCreate(BaseModel):
     person_id: int
     when: Optional[datetime]
-    what: str
+    what: Optional[str]
 
     class Config:
         orm_mode = True
@@ -24,7 +24,7 @@ class MeetingBase(MeetingCreate):
 class MeetingCreateRequest(BaseModel):
     persons: List[int]
     when: Optional[datetime]
-    what: str
+    what: Optional[str]
 
 
 # ============
@@ -33,13 +33,13 @@ class MeetingCreateRequest(BaseModel):
 class PlanCreateRequest(BaseModel):
     persons: List[int]
     when: Optional[datetime]
-    what: str
+    what: Optional[str]
 
 
 class PlanBase(BaseModel):
     person_id: int
     when: Optional[datetime]
-    what: str
+    what: Optional[str]
     id: int
     plan_hash: str
 
@@ -52,7 +52,7 @@ class PlanBase(BaseModel):
 # ============
 class NoteCreateRequest(BaseModel):
     when: Optional[datetime] = None
-    what: str
+    what: Optional[str]
 
 
 class NoteCreate(NoteCreateRequest):
@@ -93,16 +93,15 @@ class PersonCreate(BaseModel):
 class PersonBase(PersonCreate):
     id: int
     first_met: datetime
-    priority: int
 
 
 # ============
 # FINAL SCHEMAS
 # ============
 class Person(PersonBase):
-    meetings: List[MeetingBase] = []
-    plans: List[PlanBase] = []
-    notes: List[NoteBase] = []
+    meetings: Optional[List[MeetingBase]] = []
+    plans: Optional[List[PlanBase]] = []
+    notes: Optional[List[NoteBase]] = []
 
 
 class Plan(PlanBase):

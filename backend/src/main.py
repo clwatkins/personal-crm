@@ -18,6 +18,7 @@ app = FastAPI()
 logger = logging.getLogger("api")
 
 origins = [
+    "http://67.207.69.150",
     "http://localhost",  # PROD
     "http://localhost:4000",  # PROD
     "http://localhost:3000",  # DEV (default)
