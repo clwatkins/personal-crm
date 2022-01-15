@@ -78,7 +78,7 @@ npm start
 
 ```shell
 poetry shell
-SQLALCHEMY_DATABASE_URI=sqlite:///./test.db uvicorn src.main:app --reload
+SQLALCHEMY_DATABASE_URI=sqlite:///./test.db uvicorn src.main:app --reload --port 5000
 ```
 
 (and then manually create & seed the database)

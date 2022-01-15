@@ -209,7 +209,7 @@ def get_analytics_to_see(limit: Optional[int] = DEFAULT_LIMIT, db: Session = Dep
 
         # Calculate time since we last saw person
         last_seen_gap = relativedelta.relativedelta(
-            datetime.utcnow(), meetings[-1]
+            datetime.utcnow(), max(meetings)
         )
         last_seen_gap_days = (
                 last_seen_gap.years * 365
