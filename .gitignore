@@ -6,7 +6,6 @@ alembic/
 migrations/
 alembic.ini
 jsconfig.json
-public
 
 # Created by .ignore support plugin (hsz.mobi)
 ### Node template
