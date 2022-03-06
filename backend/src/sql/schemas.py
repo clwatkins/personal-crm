@@ -5,6 +5,36 @@ from pydantic import BaseModel
 
 
 # ============
+# USERS
+# ============
+class User(BaseModel):
+    id: int
+    email: str
+    name: str
+    disabled: bool
+    created_at: datetime
+
+
+class UserInDB(User):
+    hashed_password: str
+
+
+class UserCreateRequest(BaseModel):
+    email: str
+    name: str
+    raw_password: str
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    email: Optional[str] = None
+
+
+# ============
 # MEETINGS
 # ============
 class MeetingCreate(BaseModel):

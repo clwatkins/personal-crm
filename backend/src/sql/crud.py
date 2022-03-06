@@ -12,6 +12,22 @@ def _get_hash(text: str) -> str:
 
 
 # ============
+# USERS
+# ============
+def get_user(db: Session, email: str, with_password: bool):
+    if with_password:
+        return db.query(models.User).filter(models.User.email == email).first()
+    else:
+        return db.query(*[c for c in models.User.__table__.c if c.name != 'hashed_password']
+                        ).filter(models.User.email == email).first()
+
+
+def create_user(db: Session, email: str, name: str, hashed_password: str):
+    db.add(models.User(name=name, email=email, hashed_password=hashed_password))
+    db.commit()
+
+
+# ============
 # PERSONS
 # ============
 def get_persons(db: Session, limit: int):

@@ -1,38 +1,52 @@
 from collections import Counter, defaultdict
-from datetime import datetime
+from datetime import datetime, timedelta
 from dateutil import relativedelta
 import logging
 import math
-from typing import List, Optional
+import os
+import sys
+from typing import Dict, List, Optional, Union
 
-from fastapi import Depends, FastAPI, status
+from fastapi import Depends, FastAPI, status, HTTPException
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
+from jose import JWTError, jwt
+from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
 from .sql import crud, models, schemas
 from .sql.database import SessionLocal, engine
 
+DEFAULT_LIMIT = 1_000
+
+try:
+    SECRET_KEY = os.environ['BACKEND_SECRET_KEY']
+except KeyError:
+    raise KeyError('Could not find BACKEND_SECRET_KEY env variable. This is needed to sign JWT tokens.')
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
 models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 logger = logging.getLogger("api")
 
-origins = [
-    "http://67.207.69.150",
-    "http://localhost",  # PROD
-    "http://localhost:4000",  # PROD
-    "http://localhost:3000",  # DEV (default)
-]
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
+app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=[
+        "http://67.207.69.150",
+        "http://localhost",  # PROD
+        "http://localhost:4000",  # PROD
+        "http://localhost:3000",  # DEV (default)
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-DEFAULT_LIMIT = 1_000
 
 
 def get_db():
@@ -44,10 +58,95 @@ def get_db():
 
 
 # ============
+# USERS
+# ============
+# From FastAPI's OAuth2 example: https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/
+def verify_password(plain_password: str, hashed_password: str) -> str:
+    return pwd_context.verify(plain_password, hashed_password)
+
+
+def get_password_hash(password: str) -> str:
+    return pwd_context.hash(password)
+
+
+def authenticate_user(email: str, password: str, db: Session = Depends(get_db)) -> Union[bool, schemas.UserInDB]:
+    user = crud.get_user(db, email, with_password=True)
+    if not user:
+        return False
+    if not verify_password(password, user.hashed_password):
+        return False
+    return user
+
+
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=15)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+
+async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
+                           ) -> Union[HTTPException, schemas.User]:
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+        if email is None:
+            raise credentials_exception
+        token_data = schemas.TokenData(email=email)
+    except JWTError:
+        raise credentials_exception
+    user = crud.get_user(db, email=token_data.email, with_password=False)
+    if user is None:
+        raise credentials_exception
+    return user
+
+
+async def get_current_active_user(current_user: schemas.User = Depends(get_current_user)
+                                  ) -> Union[HTTPException, schemas.User]:
+    if current_user.disabled:
+        raise HTTPException(status_code=400, detail="Inactive user")
+    return current_user
+
+
+@app.post("/token", response_model=schemas.Token)
+async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
+                                 ) -> Union[HTTPException, Dict[str, str]]:
+    user = authenticate_user(form_data.username, form_data.password, db)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user.email}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
+
+@app.post("/user/", status_code=201)
+def create_user(request: schemas.UserCreateRequest, db: Session = Depends(get_db)):
+    crud.create_user(
+        db, email=request.email, hashed_password=get_password_hash(request.raw_password), name=request.name)
+
+
+# ============
 # PERSONS
 # ============
 @app.get("/persons/", response_model=List[schemas.Person])
-def get_persons(limit: Optional[int] = DEFAULT_LIMIT, db: Session = Depends(get_db)):
+def get_persons(limit: Optional[int] = DEFAULT_LIMIT, db: Session = Depends(get_db),
+                active_user: models.User = Depends(get_current_active_user)):
+    logger.info('With active user %s', active_user.email)
     persons = crud.get_persons(db, limit=limit)
     return persons
 

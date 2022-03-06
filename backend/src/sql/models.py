@@ -1,8 +1,18 @@
-from sqlalchemy import Column, Integer, Text, DateTime, ForeignKey, String
+from sqlalchemy import Column, Integer, Text, DateTime, ForeignKey, String, Boolean
 from sqlalchemy.orm import relationship
 from datetime import datetime
 
 from .database import Base
+
+
+class User(Base):
+    __tablename__ = "users"
+    id = Column(Integer, primary_key=True)
+    email = Column(Text, unique=True, nullable=False)
+    name = Column(Text, unique=False, nullable=False)
+    hashed_password = Column(Text, unique=False, nullable=False)
+    disabled = Column(Boolean, nullable=False, default=False)
+    created_at = Column(DateTime, unique=False, nullable=False, default=datetime.utcnow)
 
 
 class Person(Base):

@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "personal-crm-backend"
 version = "0.1.0"
-description = ""
+description = "FastAPI-based backend for FriendCRM app."
 authors = ["Chris Watkins <chris.watkins93@gmail.com>"]
 
 [tool.poetry.dependencies]
@@ -16,6 +16,10 @@ uvicorn = {extras = ["standard"], version = "^0.16.0"}
 alembic = "^1.7.5"
 click = "^8.0.3"
 python-multipart = "^0.0.5"
+cryptography = "^36.0.1"
+python-jose = "^3.3.0"
+passlib = "^1.7.4"
+bcrypt = "^3.2.0"
 
 [tool.poetry.dev-dependencies]
 black = "^21.12b0"
