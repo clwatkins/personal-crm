@@ -20,7 +20,7 @@ const App = () => {
       <AppBar position="static">
         <Toolbar>
           <Link to="/">
-            <HeaderButton>CW CRM</HeaderButton>
+            <HeaderButton>FriendCRM</HeaderButton>
           </Link>
 
           <Link to="/people">

@@ -9,7 +9,7 @@ import appTheme from "./theme";
 ReactDOM.render(
   <React.StrictMode>
     <Helmet>
-      <title>CW Personal CRM</title>
+      <title>FriendCRM</title>
       <meta name="viewport" content="initial-scale=1, width=device-width" />
     </Helmet>
     <ThemeProvider theme={appTheme}>
