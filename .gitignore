@@ -2,9 +2,7 @@
 .idea
 *.db
 .env.prod
-alembic/
-migrations/
-alembic.ini
+migrations/versions
 jsconfig.json
 
 # Created by .ignore support plugin (hsz.mobi)

@@ -70,7 +70,7 @@ def get_password_hash(password: str) -> str:
 
 
 def authenticate_user(email: str, password: str, db: Session = Depends(get_db)) -> Union[bool, schemas.UserInDB]:
-    user = crud.get_user(db, email, with_password=True)
+    user = crud.get_user(db=db, email=email, with_password=True)
     if not user:
         return False
     if not verify_password(password, user.hashed_password):
@@ -104,7 +104,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
         token_data = schemas.TokenData(email=email)
     except JWTError:
         raise credentials_exception
-    user = crud.get_user(db, email=token_data.email, with_password=False)
+    user = crud.get_user(db=db, email=token_data.email, with_password=False)
     if user is None:
         raise credentials_exception
     return user
@@ -137,7 +137,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 @app.post("/user/", status_code=201)
 def create_user(request: schemas.UserCreateRequest, db: Session = Depends(get_db)):
     crud.create_user(
-        db, email=request.email, hashed_password=get_password_hash(request.raw_password), name=request.name)
+        db=db, email=request.email, hashed_password=get_password_hash(request.raw_password), name=request.name)
 
 
 # ============
@@ -147,34 +147,37 @@ def create_user(request: schemas.UserCreateRequest, db: Session = Depends(get_db
 def get_persons(limit: Optional[int] = DEFAULT_LIMIT, db: Session = Depends(get_db),
                 active_user: models.User = Depends(get_current_active_user)):
     logger.info('With active user %s', active_user.email)
-    persons = crud.get_persons(db, limit=limit)
+    persons = crud.get_persons(db=db, user_id=active_user.id, limit=limit)
     return persons
 
 
 @app.post("/persons/", response_model=List[schemas.Person])
 def create_persons(
-    request: schemas.PersonsCreateRequest, db: Session = Depends(get_db)
+        request: schemas.PersonsCreateRequest, db: Session = Depends(get_db),
+        active_user: models.User = Depends(get_current_active_user)
 ):
     crud.create_persons(
-        db, names=request.persons, first_met_comment=request.what
+        db=db, user_id=active_user.id, names=request.persons, first_met_comment=request.what
     )
-    new_persons = crud.get_people_by_name(db=db, person_names=request.persons)
+    new_persons = crud.get_people_by_name(db=db, user_id=active_user.id, person_names=request.persons)
 
     return new_persons
 
 
 @app.get("/person/{person_id}", response_model=schemas.Person)
-def get_person(person_id: int, db: Session = Depends(get_db)):
-    details = crud.get_person(db, person_id=person_id)
+def get_person(person_id: int, db: Session = Depends(get_db),
+               active_user: models.User = Depends(get_current_active_user)):
+    details = crud.get_person(db=db, user_id=active_user.id, person_id=person_id)
     return details
 
 
 @app.patch("/person/{person_id}", status_code=status.HTTP_200_OK)
 def update_person(
-    person_id: int, request: schemas.PersonUpdateRequest, db: Session = Depends(get_db)
+        person_id: int, request: schemas.PersonUpdateRequest, db: Session = Depends(get_db),
+        active_user: models.User = Depends(get_current_active_user)
 ):
     crud.update_person(
-        db,
+        db=db, user_id=active_user.id,
         person_id=person_id,
         name=request.name,
         first_met_comment=request.first_met_comment,
@@ -186,17 +189,19 @@ def update_person(
 # MEETINGS
 # ============
 @app.get("/meetings/", response_model=List[schemas.Meeting])
-def get_meetings(limit: Optional[int] = DEFAULT_LIMIT, db: Session = Depends(get_db)):
-    meetings = crud.get_meetings(db, limit=limit)
+def get_meetings(limit: Optional[int] = DEFAULT_LIMIT, db: Session = Depends(get_db),
+                 active_user: models.User = Depends(get_current_active_user)):
+    meetings = crud.get_meetings(db=db, user_id=active_user.id, limit=limit)
     return meetings
 
 
 @app.post("/meetings/", status_code=status.HTTP_201_CREATED)
 def create_meeting(
-    request: schemas.MeetingCreateRequest, db: Session = Depends(get_db)
+        request: schemas.MeetingCreateRequest, db: Session = Depends(get_db),
+        active_user: models.User = Depends(get_current_active_user)
 ):
     crud.create_meeting(
-        db, person_ids=request.persons, when=request.when, what=request.what
+        db=db, user_id=active_user.id, person_ids=request.persons, when=request.when, what=request.what
     )
 
 
@@ -204,15 +209,17 @@ def create_meeting(
 # PLANS
 # ============
 @app.get("/plans/", response_model=List[schemas.Plan])
-def get_plans(limit: Optional[int] = DEFAULT_LIMIT, db: Session = Depends(get_db)):
-    plans = crud.get_plans(db, limit=limit)
+def get_plans(limit: Optional[int] = DEFAULT_LIMIT, db: Session = Depends(get_db),
+              active_user: models.User = Depends(get_current_active_user)):
+    plans = crud.get_plans(db=db, user_id=active_user.id, limit=limit)
     return plans
 
 
 @app.post("/plans/", status_code=status.HTTP_201_CREATED)
-def create_plan(request: schemas.PlanCreateRequest, db: Session = Depends(get_db)):
+def create_plan(request: schemas.PlanCreateRequest, db: Session = Depends(get_db),
+                active_user: models.User = Depends(get_current_active_user)):
     crud.create_plan(
-        db, person_ids=request.persons, when=request.when, what=request.what
+        db=db, user_id=active_user.id, person_ids=request.persons, when=request.when, what=request.what
     )
 
 
@@ -220,31 +227,35 @@ def create_plan(request: schemas.PlanCreateRequest, db: Session = Depends(get_db
 # NOTES
 # ============
 @app.get("/notes/{person_id}", response_model=List[schemas.Note])
-def get_notes_for_person(person_id: int, db: Session = Depends(get_db)):
-    notes = crud.get_notes_for_person(db, person_id)
+def get_notes_for_person(person_id: int, db: Session = Depends(get_db),
+                         active_user: models.User = Depends(get_current_active_user)):
+    notes = crud.get_notes_for_person(db=db, user_id=active_user.id, person_id=person_id)
     logging.info(notes)
     return notes
 
 
 @app.post("/notes/{person_id}", status_code=status.HTTP_201_CREATED)
 def create_note_for_person(
-    person_id: int, request: schemas.NoteCreateRequest, db: Session = Depends(get_db)
+        person_id: int, request: schemas.NoteCreateRequest, db: Session = Depends(get_db),
+        active_user: models.User = Depends(get_current_active_user)
 ):
     crud.create_note_for_person(
-        db, person_id=person_id, when=request.when, what=request.what
+        db=db, user_id=active_user.id, person_id=person_id, when=request.when, what=request.what
     )
 
 
 @app.get("/analytics/most-seen/", response_model=List[schemas.MostSeenResponse])
-def get_analytics_most_seen(limit: Optional[int] = DEFAULT_LIMIT, db: Session = Depends(get_db)):
-    meetings = crud.get_meetings(db, limit=100_000)  # arbitrarily high limit
+def get_analytics_most_seen(limit: Optional[int] = DEFAULT_LIMIT, db: Session = Depends(get_db),
+                            active_user: models.User = Depends(get_current_active_user)):
+    meetings = crud.get_meetings(db=db, user_id=active_user.id, limit=100_000)  # arbitrarily high limit
     most_common_count = Counter([meeting.person.name for meeting in meetings]).most_common(limit)
     return [{"id": i, "name": name, "count": count} for i, (name, count) in enumerate(most_common_count)]
 
 
 @app.get("/analytics/persons-summary/", response_model=List[schemas.PersonsSummaryResponse])
-def get_analytics_persons_summary(limit: Optional[int] = DEFAULT_LIMIT, db: Session = Depends(get_db)):
-    persons = crud.get_persons(db, limit=100_000)
+def get_analytics_persons_summary(limit: Optional[int] = DEFAULT_LIMIT, db: Session = Depends(get_db),
+                                  active_user: models.User = Depends(get_current_active_user)):
+    persons = crud.get_persons(db=db, user_id=active_user.id, limit=100_000)
 
     persons_summary = []
     for person in persons:
@@ -268,8 +279,9 @@ def get_analytics_persons_summary(limit: Optional[int] = DEFAULT_LIMIT, db: Sess
 
 
 @app.get("/analytics/events-summary/", response_model=List[schemas.EventsSummaryResponse])
-def get_analytics_events_summary(limit: Optional[int] = DEFAULT_LIMIT, db: Session = Depends(get_db)):
-    meetings = crud.get_meetings(db, limit=100_000)
+def get_analytics_events_summary(limit: Optional[int] = DEFAULT_LIMIT, db: Session = Depends(get_db),
+                                 active_user: models.User = Depends(get_current_active_user)):
+    meetings = crud.get_meetings(db=db, user_id=active_user.id, limit=100_000)
 
     # Reduce from people-event cardinality to event cardinality
     meetings_summary = {}
@@ -288,11 +300,12 @@ def get_analytics_events_summary(limit: Optional[int] = DEFAULT_LIMIT, db: Sessi
 
 
 @app.get("/analytics/to-see/", response_model=List[schemas.ToSeeResponse])
-def get_analytics_to_see(limit: Optional[int] = DEFAULT_LIMIT, db: Session = Depends(get_db)):
+def get_analytics_to_see(limit: Optional[int] = DEFAULT_LIMIT, db: Session = Depends(get_db),
+                         active_user: models.User = Depends(get_current_active_user)):
     min_meetings = 3
     min_timedelta_days = 30
 
-    meetings = crud.get_meetings(db, limit=100_000)  # arbitrarily high limit
+    meetings = crud.get_meetings(db=db, user_id=active_user.id, limit=100_000)  # arbitrarily high limit
 
     # Construct a record of how many times each person has been seen
     person_timeline = defaultdict(list)

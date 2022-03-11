@@ -38,6 +38,7 @@ class TokenData(BaseModel):
 # MEETINGS
 # ============
 class MeetingCreate(BaseModel):
+    user_id: int
     person_id: int
     when: Optional[datetime]
     what: Optional[str]
@@ -67,6 +68,7 @@ class PlanCreateRequest(BaseModel):
 
 
 class PlanBase(BaseModel):
+    user_id: int
     person_id: int
     when: Optional[datetime]
     what: Optional[str]
@@ -86,6 +88,7 @@ class NoteCreateRequest(BaseModel):
 
 
 class NoteCreate(NoteCreateRequest):
+    user_id: int
     person_id: int
 
     class Config:
@@ -111,6 +114,7 @@ class PersonUpdateRequest(BaseModel):
 
 
 class PersonCreate(BaseModel):
+    user_id: int
     name: str
     first_met: Optional[datetime]
     first_met_comment: Optional[str] = None

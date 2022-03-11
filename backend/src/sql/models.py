@@ -19,6 +19,7 @@ class Person(Base):
     __tablename__ = "people"
 
     id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     name = Column(Text, unique=True, nullable=False)
     first_met = Column(DateTime, unique=False, nullable=False, default=datetime.utcnow)
     first_met_comment = Column(Text, unique=False, nullable=True)
@@ -33,6 +34,7 @@ class Meeting(Base):
     __tablename__ = "meetings"
 
     id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     meeting_hash = Column(String(40), unique=False, nullable=False)
     person_id = Column(Integer, ForeignKey("people.id"), nullable=False)
     when = Column(DateTime, unique=False, nullable=False, default=datetime.utcnow)
@@ -43,6 +45,7 @@ class Plan(Base):
     __tablename__ = "plans"
 
     id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     plan_hash = Column(String(40), unique=False, nullable=False)
     person_id = Column(Integer, ForeignKey("people.id"), nullable=False)
     when = Column(DateTime, unique=False, nullable=False, default=datetime.utcnow)
@@ -53,6 +56,7 @@ class Note(Base):
     __tablename__ = "notes"
 
     id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     person_id = Column(Integer, ForeignKey("people.id"), nullable=False)
     when = Column(DateTime, unique=False, nullable=False, default=datetime.utcnow)
     what = Column(Text, unique=False, nullable=True)

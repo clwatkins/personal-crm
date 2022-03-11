@@ -3,7 +3,6 @@ import click
 from src.sql import database
 from src.sql import crud
 
-
 DB = database.SessionLocal()
 
 
@@ -21,14 +20,18 @@ def create_db():
 
 @cli.command()
 def seed_db():
-    crud.create_persons(DB, names=["Chris", "Dom"], first_met_comment="The OG")
-    crud.create_meeting(DB, person_ids=[1], what="Eat")
-    crud.create_meeting(DB, person_ids=[1], what="Sleep")
-    crud.create_meeting(DB, person_ids=[1], what="Code")
-    crud.create_meeting(DB, person_ids=[2], what="Repeat")
-    crud.create_note_for_person(DB, person_id=1, what="Cool guy")
-    crud.create_note_for_person(DB, person_id=2, what="Even cooler guy")
-    crud.create_note_for_person(DB, person_id=1, what="Learned something interesting today...")
+    crud.create_user(db=DB, email="hello@wor.ld", name="Me", hashed_password="helloworld!")
+    seeded_user = crud.get_user(db=DB, email="hello@wor.ld", with_password=False)
+
+    crud.create_persons(db=DB, user_id=seeded_user.id, names=["Chris", "Dom"], first_met_comment="The OG")
+    crud.create_meeting(db=DB, user_id=seeded_user.id, person_ids=[1], what="Eat")
+    crud.create_meeting(db=DB, user_id=seeded_user.id, person_ids=[1], what="Sleep")
+    crud.create_meeting(db=DB, user_id=seeded_user.id, person_ids=[1], what="Code")
+    crud.create_meeting(db=DB, user_id=seeded_user.id, person_ids=[2], what="Repeat")
+    crud.create_note_for_person(db=DB, user_id=seeded_user.id, person_id=1, what="Cool guy")
+    crud.create_note_for_person(db=DB, user_id=seeded_user.id, person_id=2, what="Even cooler guy")
+    crud.create_note_for_person(db=DB, user_id=seeded_user.id, person_id=1,
+                                what="Learned something interesting today...")
     click.echo("Database seeded successfully.")
 
 
