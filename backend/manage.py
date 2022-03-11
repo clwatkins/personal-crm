@@ -1,7 +1,7 @@
 import click
 
-from src.sql import database
-from src.sql import crud
+from src import main
+from src.sql import crud, database, schemas
 
 DB = database.SessionLocal()
 
@@ -20,7 +20,8 @@ def create_db():
 
 @cli.command()
 def seed_db():
-    crud.create_user(db=DB, email="hello@wor.ld", name="Me", hashed_password="helloworld!")
+    main.create_user(request=schemas.UserCreateRequest(email="hello@wor.ld", name="Me", raw_password="helloworld!"),
+                     db=DB)
     seeded_user = crud.get_user(db=DB, email="hello@wor.ld", with_password=False)
 
     crud.create_persons(db=DB, user_id=seeded_user.id, names=["Chris", "Dom"], first_met_comment="The OG")
