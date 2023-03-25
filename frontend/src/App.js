@@ -1,51 +1,62 @@
 import React from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import store from './store';
+import { Provider, useSelector } from 'react-redux';
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 
-import { AppBar, Button, CssBaseline, Toolbar } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { CssBaseline } from "@mui/material";
 
-import Analytics from "./components/screens/Analytics";
-import Home from "./components/screens/Home";
-import People from "./components/screens/People";
+import AppBar from "./components/AppBar";
+import Login from "./components/Login";
+import Analytics from "./components/Analytics";
+import Home from "./components/Home";
+import People from "./components/People";
 
-const HeaderButton = styled(Button)(() => ({
-  color: "white",
-  fontSize: "1rem",
-}));
+function PrivateRoute({ children, ...rest }) {
+  const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
+  
+  return (
+    <Route
+      {...rest}
+      render={({ location }) =>
+        isLoggedIn ? (
+          children
+        ) : (
+          <Redirect
+            to={{
+              pathname: "/login",
+              state: { from: location }
+            }}
+          />
+        )
+      }
+    />
+  );
+}
 
 const App = () => {
   return (
-    <Router>
-      <CssBaseline />
-      <AppBar position="static">
-        <Toolbar>
-          <Link to="/">
-            <HeaderButton>FriendCRM</HeaderButton>
-          </Link>
-
-          <Link to="/people">
-            <HeaderButton>People</HeaderButton>
-          </Link>
-
-          <Link to="/analytics">
-            <HeaderButton>Analytics</HeaderButton>
-          </Link>
-        </Toolbar>
-      </AppBar>
-      <main>
-        <Switch>
-          <Route path="/analytics">
-            <Analytics />
-          </Route>
-          <Route path="/people">
-            <People />
-          </Route>
-          <Route path="/">
-            <Home />
-          </Route>
-        </Switch>
-      </main>
-    </Router>
+    <Provider store={store}>
+      <Router>
+        <CssBaseline />
+        <AppBar />
+        <main>
+          <Switch>
+            <Route exact path="/login">
+              <Login />
+            </Route>
+            <PrivateRoute exact path="/analytics">
+              <Analytics />
+            </PrivateRoute>
+            <PrivateRoute exact path="/people">
+              <People />
+            </PrivateRoute>
+            <PrivateRoute exact path="/">
+              <Home />
+            </PrivateRoute>
+          </Switch>
+        </main>
+      </Router>
+    </Provider>
   );
 };
 

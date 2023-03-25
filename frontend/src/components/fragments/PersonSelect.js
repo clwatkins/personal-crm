@@ -1,24 +1,31 @@
 import Select from "react-select";
-import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import React, { useState, useEffect, useMemo } from "react";
 
-import { getPeople } from "../../Api";
+import DataService from "../../services/data";
 
 const PersonSelect = (props) => {
   const [peopleList, setPeopleList] = useState([]);
+  const authToken = useSelector(state => state.auth.token);
+
+  let dataService = useMemo(() => new DataService(authToken), [authToken]);
 
   useEffect(() => {
     const getPeopleFromApi = async () => {
-      const peopleResponse = await getPeople(-1);
+      const peopleResponse = await dataService.getPeople(-1);
 
-      setPeopleList(
-        peopleResponse.map((person) => ({
-          value: person.id,
-          label: person.name,
-        }))
-      );
+      if (peopleResponse) {
+
+        setPeopleList(
+          peopleResponse.map((person) => ({
+            value: person.id,
+            label: person.name,
+          }))
+        );
+      }
     };
     getPeopleFromApi();
-  }, []);
+  }, [dataService]);
 
   const handleSelectChange = (selectedOption) => {
     props.setSelectedValues(selectedOption);

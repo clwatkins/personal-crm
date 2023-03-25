@@ -2,22 +2,26 @@ import { Container, Card, CardContent, Grid, Typography } from "@mui/material";
 import { indigo } from "@mui/material/colors";
 
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+import { useSelector } from "react-redux";
 
-import { getMostSeen } from "../../Api";
-import { LatestEventsTable, PlansTable, ToSeeTable } from "../fragments/Tables";
+import DataService from "../services/data";
+import { LatestEventsTable, PlansTable, ToSeeTable } from "./fragments/Tables";
 
 const MostSeenBar = () => {
   const [mostSeenData, setMostSeenData] = useState([]);
+  const authToken = useSelector(state => state.auth.token);
+
+  let dataService = useMemo(() => new DataService(authToken), [authToken]);
 
   useEffect(() => {
     const getMostSeenFromApi = async () => {
-      const mostSeen = await getMostSeen(10);
+      const mostSeen = dataService.getAnalyticsMostSeen(10);
       setMostSeenData(mostSeen);
     };
 
     getMostSeenFromApi();
-  }, []);
+  }, [dataService]);
 
   return (
     <BarChart

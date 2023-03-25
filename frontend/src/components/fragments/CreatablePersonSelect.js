@@ -1,27 +1,34 @@
-import React, { useState, useEffect } from "react";
-
+import React, { useState, useEffect, useMemo } from "react";
+import { useSelector } from "react-redux";
 import { Button, TextField } from "@mui/material";
 import CreatableSelect from "react-select/creatable";
-import { getPeople, createEvent } from "../../Api";
+
+import { EVENT_TYPES } from "./Forms";
+import DataService from "../../services/data";
 
 const CreatablePersonSelect = (personPrompt, commentPrompt, eventType) => {
   const [selectedPeopleList, setSelectedPeopleList] = useState([]);
   const [peopleList, setPeopleList] = useState([]);
   const [textValue, setTextValue] = useState("");
+  const authToken = useSelector(state => state.auth.token);
+
+  let dataService = useMemo(() => new DataService(authToken), [authToken]);
 
   useEffect(() => {
     const getPeopleFromApi = async () => {
-      const peopleResponse = await getPeople(-1);
+      const peopleResponse = await dataService.getPeople(-1);
 
-      setPeopleList(
-        peopleResponse.map((person) => ({
-          value: person.id,
-          label: person.name,
-        }))
-      );
+      if (peopleResponse) {
+        setPeopleList(
+          peopleResponse.map((person) => ({
+            value: person.id,
+            label: person.name,
+          }))
+        );
+      }
     };
     getPeopleFromApi();
-  }, []);
+  }, [dataService]);
 
   const handleSelectChange = (selectedOption) => {
     setSelectedPeopleList(selectedOption);
@@ -42,21 +49,28 @@ const CreatablePersonSelect = (personPrompt, commentPrompt, eventType) => {
     // If there are new people, add them to the database
     var newPeople = [];
     if (newSelectedPeopleLabels.length > 0) {
-      newPeople = await createEvent("add", newSelectedPeopleLabels, textValue);
+      newPeople = await dataService.createPeople(newSelectedPeopleLabels, textValue);
     }
 
-    console.log(newPeople);
+    if (newPeople) {
+      console.log(newPeople);
 
-    // This returns the new people objects -- merge their ids to the existing
-    // list of selected ids
-    var combinedPeopleIds = [
-      ...existingSelectedPeopleIds,
-      ...newPeople.map(({ id }) => id),
-    ];
-    console.log(combinedPeopleIds);
+      // This returns the new people objects -- merge their ids to the existing
+      // list of selected ids
+      var combinedPeopleIds = [
+        ...existingSelectedPeopleIds,
+        ...newPeople.map(({ id }) => id),
+      ];
+      console.log(combinedPeopleIds);
 
-    // Submit to create one joint event with all people
-    createEvent(eventType, combinedPeopleIds, textValue);
+      // Submit to create one joint event with all people
+      if (eventType === EVENT_TYPES.SEE) {
+        dataService.createMeeting(combinedPeopleIds, textValue);
+      } else if (eventType === EVENT_TYPES.PLAN) {
+        dataService.createPlan(combinedPeopleIds, textValue);
+      }
+
+    }
   };
 
   return (

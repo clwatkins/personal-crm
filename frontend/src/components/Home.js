@@ -4,7 +4,7 @@ import { Container, Grid, Typography } from "@mui/material";
 import {
   PersonFormController,
   SummaryTableController,
-} from "../fragments/ModalControllers";
+} from "./fragments/ModalControllers";
 
 function Main() {
   return (

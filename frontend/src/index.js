@@ -4,7 +4,7 @@ import Helmet from "react-helmet"
 import { ThemeProvider } from "@mui/material/styles";
 
 import App from "./App";
-import appTheme from "./theme";
+import appTheme from "./themes/theme";
 
 ReactDOM.render(
   <React.StrictMode>

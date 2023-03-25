@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { PlanForm, SeeForm } from "./Forms";
+import { PlanForm, SeeForm, EVENT_TYPES } from "./Forms";
 import { EventsSummaryTable, PersonsSummaryTable } from "./Tables";
 
 import {
@@ -8,18 +8,23 @@ import {
   ModalControlButtonIcons,
 } from "./ModalControlBars";
 
+export const TABLE_TYPES = {
+  EVENTS: "EVENTS",
+  PEOPLE: "PEOPLE"
+}
+
 const PersonFormController = () => {
   const values = [
-    { value: "see", label: "Seeing" },
-    { value: "plan", label: "Planning" },
+    { value: EVENT_TYPES.SEE, label: "Seeing" },
+    { value: EVENT_TYPES.PLAN, label: "Planning" },
   ];
-  const [selectedValue, setSelectedValue] = useState("see");
+  const [selectedValue, setSelectedValue] = useState(EVENT_TYPES.SEE);
 
   const chooseFormToRender = (selectedValue) => {
     switch (selectedValue) {
-      case "see":
+      case EVENT_TYPES.SEE:
         return <SeeForm />;
-      case "plan":
+      case EVENT_TYPES.PLAN:
         return <PlanForm />;
       default:
         return <SeeForm />;
@@ -40,11 +45,12 @@ const PersonFormController = () => {
 };
 
 const SummaryTableController = () => {
-  const [selectedValue, setSelectedValue] = useState("events");
+
+  const [selectedValue, setSelectedValue] = useState(TABLE_TYPES.EVENTS);
 
   const chooseTableToRender = (selectedValue) => {
     switch (selectedValue) {
-      case "people":
+      case TABLE_TYPES.PEOPLE:
         return <PersonsSummaryTable />;
       default:
         return <EventsSummaryTable />;

@@ -5,15 +5,10 @@ import {
   TableHead,
   TableBody,
 } from "@mui/material";
-import {
-  getMeetings,
-  getPersonsSummary,
-  getEventsSummary,
-  getPlans,
-  getNotes,
-  getToSee,
-} from "../../Api";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+import { useSelector } from 'react-redux';
+
+import DataService from "../../services/data";
 
 var dateFormat = require("dateformat");
 const dateFormatLong = "ddd dd/mm/yy HH:MM";
@@ -32,15 +27,20 @@ const dateOrNull = (date, longFormat) => {
 
 const LatestEventsTable = () => {
   const [eventsList, setEventsList] = useState([]);
+  const authToken = useSelector(state => state.auth.token);
+
+  let dataService = useMemo(() => new DataService(authToken), [authToken]);
 
   useEffect(() => {
     const getMeetingsFromApi = async () => {
-      const events = await getMeetings(10);
-      setEventsList(events);
+      const events = await dataService.getMeetings(10);
+      if (events) {
+        setEventsList(events);
+      }
     };
 
     getMeetingsFromApi();
-  }, []);
+  }, [dataService]);
 
   return (
     <Table aria-label="simple table">
@@ -68,15 +68,20 @@ const LatestEventsTable = () => {
 
 const PlansTable = () => {
   const [plansList, setPlansList] = useState([]);
+  const authToken = useSelector(state => state.auth.token);
+
+  let dataService = useMemo(() => new DataService(authToken), [authToken]);
 
   useEffect(() => {
     const getPlansFromApi = async () => {
-      const plans = await getPlans(10);
-      setPlansList(plans);
+      const plans = await dataService.getPlans(10);
+      if (plans) {
+        setPlansList(plans);
+      }
     };
 
     getPlansFromApi();
-  }, []);
+  }, [dataService]);
 
   return (
     <Table aria-label="simple table">
@@ -104,17 +109,22 @@ const PlansTable = () => {
 
 const NotesTable = (props) => {
   const [notesList, setNotesList] = useState([]);
+  const authToken = useSelector(state => state.auth.token);
+
+  let dataService = useMemo(() => new DataService(authToken), [authToken]);
 
   useEffect(() => {
-    const getNotesFromApi = async (personId) => {
-      const notes = await getNotes(personId);
-      setNotesList(notes);
+    const getPersonNotesFromApi = async (personId) => {
+      const notes = await dataService.getPersonNotes(personId);
+      if (notes) {
+        setNotesList(notes);
+      }
     };
 
     if (props.personId > 0) {
-      getNotesFromApi(props.personId);
+      getPersonNotesFromApi(props.personId);
     }
-  }, [props]);
+  }, [dataService, props]);
 
   return (
     <Table aria-label="simple table">
@@ -138,15 +148,20 @@ const NotesTable = (props) => {
 
 const ToSeeTable = () => {
   const [toSeeList, setToSeeList] = useState([]);
+  const authToken = useSelector(state => state.auth.token);
+
+  let dataService = useMemo(() => new DataService(authToken), [authToken]);
 
   useEffect(() => {
-    const getToSeeFromApi = async () => {
-      const toSee = await getToSee(15);
-      setToSeeList(toSee);
+    const getPlansFromApi = async () => {
+      const toSee = await dataService.getPlans(15);
+      if (toSee) {
+        setToSeeList(toSee);
+      }
     };
 
-    getToSeeFromApi();
-  }, []);
+    getPlansFromApi();
+  }, [dataService]);
 
   return (
     <Table aria-label="simple table">
@@ -172,15 +187,20 @@ const ToSeeTable = () => {
 
 const PersonsSummaryTable = () => {
   const [personsSummaryList, setPersonSummaryList] = useState([]);
+  const authToken = useSelector(state => state.auth.token);
+
+  let dataService = useMemo(() => new DataService(authToken), [authToken]);
 
   useEffect(() => {
     const getPersonsSummaryFromApi = async () => {
-      const personsSummary = await getPersonsSummary(100);
-      setPersonSummaryList(personsSummary);
+      const personsSummary = await dataService.getAnalyticsPersonsSummary(100);
+      if (personsSummary) {
+        setPersonSummaryList(personsSummary);
+      }
     };
 
     getPersonsSummaryFromApi();
-  }, []);
+  }, [dataService]);
 
   return (
     <Table aria-label="simple table">
@@ -216,15 +236,20 @@ const PersonsSummaryTable = () => {
 
 const EventsSummaryTable = () => {
   const [eventsSummaryList, setEventsSummaryList] = useState([]);
+  const authToken = useSelector(state => state.auth.token);
+
+  let dataService = useMemo(() => new DataService(authToken), [authToken]);
 
   useEffect(() => {
     const getEventsSummaryFromApi = async () => {
-      const eventsSummary = await getEventsSummary(100);
-      setEventsSummaryList(eventsSummary);
+      const eventsSummary = await dataService.getAnalyticsEventsSummary(100);
+      if (eventsSummary) {
+        setEventsSummaryList(eventsSummary);
+      }
     };
 
     getEventsSummaryFromApi();
-  }, []);
+  }, [dataService]);
 
   return (
     <Table aria-label="simple table">

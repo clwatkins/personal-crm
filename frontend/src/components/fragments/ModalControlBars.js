@@ -5,6 +5,8 @@ import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import EventIcon from "@mui/icons-material/Event";
 
+import { TABLE_TYPES } from "./ModalControllers";
+
 const ModalControlButtonsButton = styled(ToggleButton)(() => ({
   "&.Mui-selected": {
     background: "#303f9f",
@@ -45,10 +47,10 @@ const ModalControlButtonIcons = ({ selectedValue, setSelectedValue }) => {
       onChange={handleChange}
       aria-label="text alignment"
     >
-      <ToggleButton value="events" aria-label="events">
+      <ToggleButton value={TABLE_TYPES.EVENTS} aria-label="events">
         <EventIcon />
       </ToggleButton>
-      <ToggleButton value="people" aria-label="people">
+      <ToggleButton value={TABLE_TYPES.PEOPLE} aria-label="people">
         <PersonIcon />
       </ToggleButton>
     </ToggleButtonGroup>

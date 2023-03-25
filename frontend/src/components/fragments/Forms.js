@@ -1,5 +1,3 @@
-import { getPersonDetails, updatePersonDetails, createNote } from "../../Api";
-
 import {
   Button,
   Grid,
@@ -10,8 +8,16 @@ import {
 } from "@mui/material";
 import FlagIcon from "@mui/icons-material/Flag";
 import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+import { useSelector } from "react-redux";
+
 import { CreatablePersonSelect } from "./CreatablePersonSelect";
+import DataService from "../../services/data";
+
+export const EVENT_TYPES = {
+  PLAN: "plan",
+  SEE: "see"
+}
 
 const PersonDetailsForm = (props) => {
   const [detailsProps, setDetailsProps] = useState({
@@ -19,20 +25,25 @@ const PersonDetailsForm = (props) => {
     first_met_comment: "",
     priority: 2,
   });
+  const authToken = useSelector(state => state.auth.token);
+
+  let dataService = useMemo(() => new DataService(authToken), [authToken]);
 
   useEffect(() => {
     const getPersonDetailsFromApi = async (personId) => {
-      const details = await getPersonDetails(personId);
-      setDetailsProps(details);
+      const details = await dataService.getPersonDetails(personId).catch(err => { console.log(err) });
+      if (details) {
+        setDetailsProps(details);
+      }
     };
 
     if (props.personId > 0) {
       getPersonDetailsFromApi(props.personId);
     }
-  }, [props]);
+  }, [dataService, props]);
 
   const handleFormSubmit = async (e) => {
-    updatePersonDetails(props.personId, detailsProps);
+    dataService.updatePersonDetails(props.personId, detailsProps);
   };
 
   return (
@@ -97,9 +108,12 @@ const PersonDetailsForm = (props) => {
 
 const NoteForm = (props) => {
   const [textValue, setTextValue] = useState("");
+  const authToken = useSelector(state => state.auth.token);
+
+  let dataService = useMemo(() => new DataService(authToken), [authToken]);
 
   const handleFormSubmit = async (e) => {
-    createNote(props.personId, textValue);
+    dataService.createNote(props.personId, textValue);
 
     setTextValue("");
   };
@@ -132,7 +146,7 @@ const PlanForm = () => {
   return CreatablePersonSelect(
     "Who are you planning to meet?",
     "What are you going to do?",
-    "plan"
+    EVENT_TYPES.PLAN
   );
 };
 
@@ -140,7 +154,7 @@ const SeeForm = () => {
   return CreatablePersonSelect(
     "Who are you seeing?",
     "What are you doing?",
-    "see"
+    EVENT_TYPES.SEE
   );
 };
 
