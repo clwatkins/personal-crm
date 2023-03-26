@@ -1,12 +1,13 @@
 import pynecone as pc
-from ..components.add_form_switcher import add_form_switcher
+from ..components.action_form import action_form
 
 
+@pc.route('/', title="FriendCRM")
 def index() -> pc.Component:
     return pc.center(
         pc.vstack(
             pc.heading("Welcome to FriendCRM!", font_size="2em"),
-            add_form_switcher(),
+            action_form(),
         ),
-        padding_top="10%",
+        padding="2em",
     )
