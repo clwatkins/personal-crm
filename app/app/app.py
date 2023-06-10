@@ -12,9 +12,9 @@ from .pages.auth import login, logout
 
 # Add state and page to the app.
 app = pc.App(state=AppState, style=AppStyle, stylesheets=STYLESHEETS)
-app.add_page(analytics, route="/analytics")
-app.add_page(login, route="/login")
-app.add_page(logout, route="/logout")
-app.add_page(index, route="/")
+app.add_page(analytics, route="/analytics", title="FriendCRM - Analytics")
+app.add_page(login, route="/login", title="FriendCRM - Login")
+app.add_page(logout, route="/logout", title="FriendCRM - Logout")
+app.add_page(index, route="/", title="FriendCRM")
 # app.add_page(person_details, route="/person-details")
 app.compile()
