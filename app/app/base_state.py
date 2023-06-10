@@ -3,7 +3,8 @@
 import pynecone as pc
 
 
-class State(pc.State):
+class AppState(pc.State):
     """The base state."""
 
+    is_authorised: bool = False
     authorised_user_id: int = 0

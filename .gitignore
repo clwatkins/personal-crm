@@ -1,9 +1,10 @@
 .vscode
 .idea
 *.db
-.env.prod
+.env*
 migrations/versions/*
 jsconfig.json
+.web
 
 # Created by .ignore support plugin (hsz.mobi)
 ### Node template

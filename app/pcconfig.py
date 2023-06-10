@@ -1,7 +1,11 @@
 import pynecone as pc
 
 config = pc.Config(
-    app_name="friend-crm-app",
+    app_name="friend_crm",
     db_url="sqlite:///pynecone.db",
-    env=pc.Env.DEV,
+    api_url="http://localhost:3000",
+    bun_path="/app/.bun/bin/bun",
+    frontend_packages=[
+        "react-select",
+    ],
 )
