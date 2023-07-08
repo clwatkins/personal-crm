@@ -1,10 +1,10 @@
-import pynecone as pc
+import reflex as rx
 from sqlmodel import Field
 from datetime import datetime
 from typing import Optional
 
 
-class User(pc.Model, table=True):
+class User(rx.Model, table=True):
     __tablename__ = "users"
     email: str = Field(unique=True, nullable=False)
     name: str = Field(unique=False, nullable=False)
@@ -15,7 +15,7 @@ class User(pc.Model, table=True):
     )
 
 
-class Person(pc.Model, table=True):
+class Person(rx.Model, table=True):
     __tablename__ = "people"
 
     user_id: int = Field(
@@ -30,7 +30,7 @@ class Person(pc.Model, table=True):
     priority: int = Field(2, unique=False, nullable=True)
 
 
-class Meeting(pc.Model, table=True):
+class Meeting(rx.Model, table=True):
     __tablename__ = "meetings"
 
     id: int = Field(default=None, primary_key=True)
@@ -43,7 +43,7 @@ class Meeting(pc.Model, table=True):
     what: Optional[str] = Field(None, unique=False, nullable=True)
 
 
-class Plan(pc.Model, table=True):
+class Plan(rx.Model, table=True):
     __tablename__ = "plans"
 
     id: int = Field(default=None, primary_key=True)
@@ -56,7 +56,7 @@ class Plan(pc.Model, table=True):
     what: Optional[str] = Field(None, unique=False, nullable=True)
 
 
-class Note(pc.Model, table=True):
+class Note(rx.Model, table=True):
     __tablename__ = "notes"
 
     id: int = Field(default=None, primary_key=True)

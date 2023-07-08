@@ -1,4 +1,4 @@
-import pynecone as pc
+import reflex as rx
 from ..components.navbar import navbar
 from ..components.person_editor import person_editor
 from ..components.fragments.person_details_selector import person_details_selector
@@ -9,7 +9,7 @@ from ..backend import crud
 from ..backend.models import Note, Person
 
 
-class PersonInfo(pc.Base):
+class PersonInfo(rx.Base):
     # Qualify person_name to avoid collision with default name prop
     person_name: str = ""
     about: str = ""
@@ -19,9 +19,9 @@ class PersonInfo(pc.Base):
 class PersonDetailsState(AppState):
     """The state for Person Details + related components."""
 
-    @pc.var
+    @rx.var
     def current_people(self) -> list[dict[str, Union[int, str]]]:
-        with pc.session() as session:
+        with rx.session() as session:
             people = crud.get_persons(
                 db=session, user_id=self.authorised_user_id, limit=100
             )
@@ -32,7 +32,7 @@ class PersonDetailsState(AppState):
 
     def set_selected_person(self, person: dict[str, Union[int, str]]):
         self.selected_person = person
-        pc.console_log(f"Selected person: {self.selected_person}")
+        rx.console_log(f"Selected person: {self.selected_person}")
         return [
             self.set_person_info,
             self.set_edited_person_info,
@@ -40,7 +40,7 @@ class PersonDetailsState(AppState):
         ]
 
     def set_person_info(self):
-        with pc.session() as session:
+        with rx.session() as session:
             person: Person = crud.get_person(
                 db=session,
                 user_id=self.authorised_user_id,
@@ -49,17 +49,17 @@ class PersonDetailsState(AppState):
         self.selected_person_info = PersonInfo(
             name=person.name, about=person.first_met_comment, priority=person.priority
         )
-        pc.console_log(f"Selected person info: {self.selected_person_info}")
+        rx.console_log(f"Selected person info: {self.selected_person_info}")
 
-    @pc.var
+    @rx.var
     def person_name(self) -> str:
         return self.selected_person_info.person_name
 
-    @pc.var
+    @rx.var
     def person_about(self) -> str:
         return self.selected_person_info.about
 
-    @pc.var
+    @rx.var
     def person_priority(self) -> int:
         return self.selected_person_info.priority
 
@@ -71,7 +71,7 @@ class PersonDetailsState(AppState):
     # def set_current_notes(self) -> list[Note]:
     #     if self.selected_person is None:
     #         return []
-    #     with pc.session() as session:
+    #     with rx.session() as session:
     #         notes = crud.get_notes_for_person(
     #             db=session,
     #             user_id=self.authorised_user_id,
@@ -107,22 +107,22 @@ class PersonDetailsState(AppState):
         # TODO: reset selected people
 
 
-def person_details() -> pc.Component:
-    return pc.vstack(
+def person_details() -> rx.Component:
+    return rx.vstack(
         navbar(),
-        pc.heading(
+        rx.heading(
             "Person Details",
             font_size="2em",
             padding_top="2em",
         ),
-        pc.hstack(
-            pc.text("Select a friend:"),
+        rx.hstack(
+            rx.text("Select a friend:"),
             person_details_selector(PersonDetailsState),
             width="100%",
         ),
-        pc.divider(margin_bottom="0.5em", margin_top="0.5em"),
+        rx.divider(margin_bottom="0.5em", margin_top="0.5em"),
         # person_notes(PersonDetailsState),
-        pc.divider(margin_bottom="0.5em", margin_top="0.5em"),
+        rx.divider(margin_bottom="0.5em", margin_top="0.5em"),
         person_editor(PersonDetailsState),
         border="1px solid #ccc",
         border_radius="5px",

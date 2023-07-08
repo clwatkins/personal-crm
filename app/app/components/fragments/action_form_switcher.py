@@ -1,5 +1,5 @@
 from enum import Enum, auto
-import pynecone as pc
+import reflex as rx
 from ...base_state import AppState
 
 
@@ -15,28 +15,28 @@ class SwitchState(AppState):
 
     checked: bool = False
 
-    @pc.var
+    @rx.var
     def context_form_placeholder_text(self) -> str:
         if self.current_selection == AddType.See.name:
             return "What are you doing?"
         else:
             return "What are you planning?"
 
-    @pc.var
+    @rx.var
     def people_form_placeholder_text(self) -> str:
         if self.current_selection == AddType.See.name:
             return "Who's adventuring with you?"
         else:
             return "Who are you scheming with?"
 
-    @pc.var
+    @rx.var
     def current_selection(self):
         return AddType.Plan.name if self.checked else AddType.See.name
 
 
 def action_form_switcher():
-    return pc.hstack(
-        pc.text("See"),
-        pc.switch(is_checked=SwitchState.checked, on_change=SwitchState.set_checked),
-        pc.text("Plan"),
+    return rx.hstack(
+        rx.text("See"),
+        rx.switch(is_checked=SwitchState.checked, on_change=SwitchState.set_checked),
+        rx.text("Plan"),
     )

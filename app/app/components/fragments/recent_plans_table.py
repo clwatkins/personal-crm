@@ -1,4 +1,4 @@
-import pynecone as pc
+import reflex as rx
 from ...base_state import AppState
 from ...backend import crud
 import pandas as pd
@@ -9,9 +9,9 @@ class RecentPlansState(AppState):
 
     have_recent_plans: bool = False
 
-    @pc.var
+    @rx.var
     def recent_plans(self) -> list[dict]:
-        with pc.session() as session:
+        with rx.session() as session:
             plans = crud.get_plans(
                 db=session, user_id=self.authorised_user_id, limit=10
             )
@@ -30,28 +30,28 @@ class RecentPlansState(AppState):
 
 
 def show_plan(meeting):
-    return pc.tr(
-        pc.td(meeting["plans.what"]),
-        pc.td(meeting["plans.when"]),
-        pc.td(meeting["people.name"]),
+    return rx.tr(
+        rx.td(meeting["plans.what"]),
+        rx.td(meeting["plans.when"]),
+        rx.td(meeting["people.name"]),
     )
 
 
-def recent_plans_table() -> pc.Component:
-    return pc.card(
-        header=pc.heading("What have you got planned?", size="lg"),
-        body=pc.cond(
+def recent_plans_table() -> rx.Component:
+    return rx.card(
+        header=rx.heading("What have you got planned?", size="lg"),
+        body=rx.cond(
             RecentPlansState.have_recent_plans == False,
-            pc.text("No upcoming plans -- go make some!"),
-            pc.table(
-                pc.thead(
-                    pc.tr(
-                        pc.th("What"),
-                        pc.th("When"),
-                        pc.th("With"),
+            rx.text("No upcoming plans -- go make some!"),
+            rx.table(
+                rx.thead(
+                    rx.tr(
+                        rx.th("What"),
+                        rx.th("When"),
+                        rx.th("With"),
                     )
                 ),
-                pc.tbody(pc.foreach(RecentPlansState.recent_plans, show_plan)),
+                rx.tbody(rx.foreach(RecentPlansState.recent_plans, show_plan)),
             ),
         ),
     )

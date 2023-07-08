@@ -1,16 +1,14 @@
-import pynecone as pc
+import reflex as rx
 from ... import base_style as style
 
 
-def need_login() -> pc.Component:
+def need_login() -> rx.Component:
     """The login requirement."""
-    return pc.card(
-        header=pc.heading("You need to login to access this page.", size="md"),
-        body=pc.center(
-            pc.button(
-                "Login",
-                on_click=lambda _: pc.redirect("/login"),
-                **style.ACTION_BUTTON_STYLE
+    return rx.card(
+        header=rx.heading("You need to login to access this page.", size="md"),
+        body=rx.center(
+            rx.button(
+                "Login", on_click=rx.redirect("/login"), **style.ACTION_BUTTON_STYLE
             )
         ),
     )

@@ -1,14 +1,14 @@
 # Wrapped "react-select" for multi-select dropdowns.
-import pynecone as pc
+import reflex as rx
 
 
-class CreatableSelect(pc.Component):
+class CreatableSelect(rx.Component):
     library = "react-select/creatable"
     tag = "Creatable"
-    is_multi: pc.Var[bool]
-    is_searchable: pc.Var[bool]
-    options: pc.Var[list[dict[str, str]]]
-    placeholder: pc.Var[str]
+    is_multi: rx.Var[bool]
+    is_searchable: rx.Var[bool]
+    options: rx.Var[list[dict[str, str]]]
+    placeholder: rx.Var[str]
 
     def _get_imports(self):
         return {}
@@ -19,17 +19,17 @@ class CreatableSelect(pc.Component):
     """
 
     @classmethod
-    def get_controlled_triggers(cls) -> dict[str, pc.Var]:
-        return {"on_change": pc.EVENT_ARG}
+    def get_controlled_triggers(cls) -> dict[str, rx.Var]:
+        return {"on_change": rx.EVENT_ARG}
 
 
-class Select(pc.Component):
+class Select(rx.Component):
     library = "react-select"
     tag = "Select"
-    is_multi: pc.Var[bool]
-    is_searchable: pc.Var[bool]
-    options: pc.Var[list[dict[str, str]]]
-    placeholder: pc.Var[str]
+    is_multi: rx.Var[bool]
+    is_searchable: rx.Var[bool]
+    options: rx.Var[list[dict[str, str]]]
+    placeholder: rx.Var[str]
 
     def _get_imports(self):
         return {}
@@ -41,8 +41,8 @@ class Select(pc.Component):
     """
 
     @classmethod
-    def get_controlled_triggers(cls) -> dict[str, pc.Var]:
-        return {"on_change": pc.EVENT_ARG}
+    def get_controlled_triggers(cls) -> dict[str, rx.Var]:
+        return {"on_change": rx.EVENT_ARG}
 
 
 select = Select.create
@@ -51,7 +51,7 @@ creatable_select = CreatableSelect.create
 
 def creatable_person_selector(
     state, setter_func, is_multi: bool = True, is_searchable: bool = True
-) -> pc.Component:
+) -> rx.Component:
     return creatable_select(
         is_multi=is_multi,
         is_searchable=is_searchable,
@@ -63,7 +63,7 @@ def creatable_person_selector(
 
 def person_selector(
     state, setter_func, is_multi: bool = True, is_searchable: bool = True
-) -> pc.Component:
+) -> rx.Component:
     return select(
         is_multi=is_multi,
         is_searchable=is_searchable,

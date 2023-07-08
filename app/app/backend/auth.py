@@ -1,4 +1,4 @@
-import pynecone as pc
+import reflex as rx
 from passlib.context import CryptContext
 
 from app.backend import crud
@@ -20,7 +20,7 @@ def get_password_hash(password: str) -> str:
 
 
 def authenticate_user(
-    email: str, password: str, db: pc.session
+    email: str, password: str, db: rx.session
 ) -> tuple[bool, Optional[User]]:
     user = crud.get_user(db=db, email=email, with_password=True)
     if not user:

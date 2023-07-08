@@ -2,7 +2,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
 
-import pynecone as pc
+import reflex as rx
 
 from ...base_state import AppState
 from ...backend import analytics
@@ -10,15 +10,15 @@ from ..fragments import card_page
 
 
 class MostSeenChartState(AppState):
-    @pc.var
+    @rx.var
     def chart_data(self) -> pd.DataFrame:
-        with pc.session() as session:
+        with rx.session() as session:
             most_seen = analytics.get_most_seen(
                 db=session, user_id=self.authorised_user_id, limit=10
             )
         return pd.DataFrame(most_seen)
 
-    @pc.var
+    @rx.var
     def chart_fig(self) -> go.Figure:
         return (
             go.Figure()
@@ -31,10 +31,10 @@ class MostSeenChartState(AppState):
         )
 
 
-def most_seen_chart() -> pc.Component:
+def most_seen_chart() -> rx.Component:
     return card_page.card_page(
         header_text="Who have you seen the most?",
-        body_component=pc.plotly(
+        body_component=rx.plotly(
             data=MostSeenChartState.chart_fig, layout={"width": "100%", "height": "350"}
         ),
     )

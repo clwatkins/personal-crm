@@ -1,4 +1,4 @@
-import pynecone as pc
+import reflex as rx
 from ..base_state import AppState
 from .. import base_style as Style
 from .fragments.action_form_switcher import action_form_switcher, SwitchState
@@ -13,7 +13,7 @@ def create_new_people(
     first_met_comment: str,
     new_people_names: list[str] = None
 ):
-    with pc.session() as session:
+    with rx.session() as session:
         crud.create_persons(
             db=session,
             user_id=authorised_user_id,
@@ -39,9 +39,9 @@ class ActionFormState(AppState):
     selected_people: Optional[list[dict[str, Union[int, str]]]] = None
     show_success: bool = False
 
-    @pc.var
+    @rx.var
     def current_people(self) -> list[dict[str, Union[int, str]]]:
-        with pc.session() as session:
+        with rx.session() as session:
             people = crud.get_persons(
                 db=session, user_id=self.authorised_user_id, limit=100
             )
@@ -71,7 +71,7 @@ class ActionFormState(AppState):
         else:
             new_people_ids = []
 
-        with pc.session() as session:
+        with rx.session() as session:
             if SwitchState.current_selection == "see":
                 crud.create_meeting(
                     db=session,
@@ -92,7 +92,7 @@ class ActionFormState(AppState):
         # TODO: reset selected people
 
     def create_new_people(self, new_people_names: list[str] = None):
-        with pc.session() as session:
+        with rx.session() as session:
             crud.create_persons(
                 db=session,
                 user_id=self.authorised_user_id,
@@ -111,31 +111,31 @@ class ActionFormState(AppState):
         return new_people_obj
 
 
-def action_form() -> pc.Component:
-    return pc.card(
-        header=pc.heading("What are you up to?", size="lg"),
-        body=pc.vstack(
+def action_form() -> rx.Component:
+    return rx.card(
+        header=rx.heading("What are you up to?", size="lg"),
+        body=rx.vstack(
             action_form_switcher(),
             creatable_person_selector(
                 ActionFormState, ActionFormState.set_selected_people
             ),
-            pc.divider(),
-            pc.input(
+            rx.divider(),
+            rx.input(
                 on_change=ActionFormState.set_context_text,
                 placeholder=SwitchState.context_form_placeholder_text,
             ),
-            pc.center(
-                pc.button(
+            rx.center(
+                rx.button(
                     "Add",
                     on_click=ActionFormState.handle_form_submit,
                     **Style.ACTION_BUTTON_STYLE
                 )
             ),
-            pc.cond(
+            rx.cond(
                 ActionFormState.show_success,
-                pc.alert(
-                    pc.alert_icon(),
-                    pc.alert_title("Success!"),
+                rx.alert(
+                    rx.alert_icon(),
+                    rx.alert_title("Success!"),
                     status="success",
                     on_mouse_move=lambda _: ActionFormState.set_show_success(False),
                 ),

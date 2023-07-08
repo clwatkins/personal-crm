@@ -1,9 +1,9 @@
 """The base application state."""
 
-import pynecone as pc
+import reflex as rx
 
 
-class AppState(pc.State):
+class AppState(rx.State):
     """The base state."""
 
     is_authorised: bool = False

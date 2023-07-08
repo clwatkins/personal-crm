@@ -1,4 +1,4 @@
-import pynecone as pc
+import reflex as rx
 from datetime import datetime
 from typing import Optional
 from .models import Person, User, Plan, Meeting, Note
@@ -14,7 +14,7 @@ def _get_hash(text: str) -> str:
 def _flatten_row(row: Row) -> dict:
     row_output = {}
     for col in row:
-        if isinstance(col, pc.Model):
+        if isinstance(col, rx.Model):
             row_output.update(
                 {
                     f"{col.__tablename__.lower()}.{k.lower()}": v
@@ -45,7 +45,7 @@ def make_json_safe(objs):
 # ============
 # USERS
 # ============
-def get_user(*, db: pc.session, email: str, with_password: bool):
+def get_user(*, db: rx.session, email: str, with_password: bool):
     if with_password:
         return db.query(User).filter(User.email == email).first()
     else:
@@ -56,7 +56,7 @@ def get_user(*, db: pc.session, email: str, with_password: bool):
         )
 
 
-def create_user(*, db: pc.session, email: str, name: str, hashed_password: str):
+def create_user(*, db: rx.session, email: str, name: str, hashed_password: str):
     db.add(User(name=name, email=email, hashed_password=hashed_password))
     db.commit()
 
@@ -64,7 +64,7 @@ def create_user(*, db: pc.session, email: str, name: str, hashed_password: str):
 # ============
 # PERSONS
 # ============
-def get_persons(*, db: pc.session, user_id: int, limit: int):
+def get_persons(*, db: rx.session, user_id: int, limit: int):
     return (
         db.query(Person)
         .filter(Person.user_id == user_id)
@@ -74,7 +74,7 @@ def get_persons(*, db: pc.session, user_id: int, limit: int):
     )
 
 
-def get_person(*, db: pc.session, user_id: int, person_id: int):
+def get_person(*, db: rx.session, user_id: int, person_id: int):
     return (
         db.query(Person)
         .filter(Person.user_id == user_id, Person.id == person_id)
@@ -82,7 +82,7 @@ def get_person(*, db: pc.session, user_id: int, person_id: int):
     )
 
 
-def get_people_by_name(*, db: pc.session, user_id: int, person_names: list[str]):
+def get_people_by_name(*, db: rx.session, user_id: int, person_names: list[str]):
     return (
         db.query(Person)
         .filter(Person.user_id == user_id, Person.name.in_(person_names))
@@ -92,7 +92,7 @@ def get_people_by_name(*, db: pc.session, user_id: int, person_names: list[str])
 
 def update_person(
     *,
-    db: pc.session,
+    db: rx.session,
     user_id: int,
     person_id: int,
     name: str,
@@ -108,7 +108,7 @@ def update_person(
 
 def create_persons(
     *,
-    db: pc.session,
+    db: rx.session,
     user_id: int,
     names: list[str],
     first_met_comment: Optional[str] = None,
@@ -131,7 +131,7 @@ def create_persons(
 # ============
 # MEETINGS
 # ============
-def get_meetings(*, db: pc.session, user_id: int, limit: int):
+def get_meetings(*, db: rx.session, user_id: int, limit: int):
     return (
         db.query(Meeting, Person)
         .join(Person)
@@ -144,7 +144,7 @@ def get_meetings(*, db: pc.session, user_id: int, limit: int):
 
 def create_meeting(
     *,
-    db: pc.session,
+    db: rx.session,
     user_id: int,
     person_ids: list[int],
     what: str,
@@ -170,7 +170,7 @@ def create_meeting(
 # ============
 # PLANS
 # ============
-def get_plans(*, db: pc.session, user_id: int, limit: int):
+def get_plans(*, db: rx.session, user_id: int, limit: int):
     return (
         db.query(Plan, Person)
         .join(Person)
@@ -183,7 +183,7 @@ def get_plans(*, db: pc.session, user_id: int, limit: int):
 
 def create_plan(
     *,
-    db: pc.session,
+    db: rx.session,
     user_id: int,
     person_ids: list[int],
     what: str,
@@ -209,7 +209,7 @@ def create_plan(
 # ============
 # NOTES
 # ============
-def get_notes_for_person(*, db: pc.session, user_id: int, person_id: int):
+def get_notes_for_person(*, db: rx.session, user_id: int, person_id: int):
     return (
         db.query(Note)
         .filter(Note.user_id == user_id, Note.person_id == person_id)
@@ -220,7 +220,7 @@ def get_notes_for_person(*, db: pc.session, user_id: int, person_id: int):
 
 def create_note_for_person(
     *,
-    db: pc.session,
+    db: rx.session,
     user_id: int,
     person_id: int,
     what: str,

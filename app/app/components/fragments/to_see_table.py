@@ -1,4 +1,4 @@
-import pynecone as pc
+import reflex as rx
 from ...base_state import AppState
 from ...backend import analytics
 import pandas as pd
@@ -9,9 +9,9 @@ class ToSeeState(AppState):
 
     have_to_see: bool = False
 
-    @pc.var
+    @rx.var
     def to_see(self) -> list[dict]:
-        with pc.session() as session:
+        with rx.session() as session:
             to_see = analytics.get_to_see(
                 db=session, user_id=self.authorised_user_id, limit=10
             )
@@ -24,28 +24,28 @@ class ToSeeState(AppState):
 
 
 def show_to_see(person):
-    return pc.tr(
-        pc.td(person["name"]),
-        pc.td(person["total_meetings"]),
-        pc.td(person["days_since_last_seen"]),
+    return rx.tr(
+        rx.td(person["name"]),
+        rx.td(person["total_meetings"]),
+        rx.td(person["days_since_last_seen"]),
     )
 
 
-def to_see_table() -> pc.Component:
-    return pc.card(
-        header=pc.heading("Who should you see next?", size="lg"),
-        body=pc.cond(
+def to_see_table() -> rx.Component:
+    return rx.card(
+        header=rx.heading("Who should you see next?", size="lg"),
+        body=rx.cond(
             ToSeeState.have_to_see == False,
-            pc.text("No recommendations -- go have some fun!"),
-            pc.table(
-                pc.thead(
-                    pc.tr(
-                        pc.th("Who"),
-                        pc.th("Total Meetings"),
-                        pc.th("Days since last Seen"),
+            rx.text("No recommendations -- go have some fun!"),
+            rx.table(
+                rx.thead(
+                    rx.tr(
+                        rx.th("Who"),
+                        rx.th("Total Meetings"),
+                        rx.th("Days since last Seen"),
                     )
                 ),
-                pc.tbody(pc.foreach(ToSeeState.to_see, show_to_see)),
+                rx.tbody(rx.foreach(ToSeeState.to_see, show_to_see)),
             ),
         ),
     )

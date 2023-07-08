@@ -1,4 +1,4 @@
-import pynecone as pc
+import reflex as rx
 from dateutil import relativedelta
 from collections import Counter, defaultdict
 import math
@@ -8,7 +8,7 @@ from datetime import datetime
 DEFAULT_LIMIT = 1_000
 
 
-def get_most_seen(db: pc.session, user_id: int, limit: int = 100):
+def get_most_seen(db: rx.session, user_id: int, limit: int = 100):
     meetings = crud.get_meetings(
         db=db, user_id=user_id, limit=100_000
     )  # arbitrarily high limit
@@ -21,7 +21,7 @@ def get_most_seen(db: pc.session, user_id: int, limit: int = 100):
     ]
 
 
-def get_to_see(db: pc.session, user_id: int, limit: int = 100):
+def get_to_see(db: rx.session, user_id: int, limit: int = 100):
     min_meetings = 3
     min_timedelta_days = 30
 

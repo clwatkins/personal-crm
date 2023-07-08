@@ -1,4 +1,4 @@
-import pynecone as pc
+import reflex as rx
 
 # General styles.
 BOLD_WEIGHT = "800"
@@ -26,12 +26,12 @@ AppStyle = {
     "::selection": {
         "background_color": ACCENT_COLOR_LIGHT,
     },
-    pc.Text: {
+    rx.Text: {
         "font_family": "Inter",
         "font_size": 16,
     },
-    pc.Divider: {"margin_bottom": "1em", "margin_top": "0.5em"},
-    pc.Code: {
+    rx.Divider: {"margin_bottom": "1em", "margin_top": "0.5em"},
+    rx.Code: {
         "color": ACCENT_COLOR,
     },
     "font_family": "Inter",

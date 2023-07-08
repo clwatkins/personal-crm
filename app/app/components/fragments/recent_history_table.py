@@ -1,4 +1,4 @@
-import pynecone as pc
+import reflex as rx
 from ...base_state import AppState
 from ...backend import crud
 import pandas as pd
@@ -9,9 +9,9 @@ class RecentHistoryState(AppState):
 
     have_recent_meetings: bool = False
 
-    @pc.var
+    @rx.var
     def recent_meetings(self) -> list[dict]:
-        with pc.session() as session:
+        with rx.session() as session:
             meetings = crud.get_meetings(
                 db=session, user_id=self.authorised_user_id, limit=10
             )
@@ -30,28 +30,28 @@ class RecentHistoryState(AppState):
 
 
 def show_meeting(meeting):
-    return pc.tr(
-        pc.td(meeting["meetings.what"]),
-        pc.td(meeting["meetings.when"]),
-        pc.td(meeting["people.name"]),
+    return rx.tr(
+        rx.td(meeting["meetings.what"]),
+        rx.td(meeting["meetings.when"]),
+        rx.td(meeting["people.name"]),
     )
 
 
-def recent_history_table() -> pc.Component:
-    return pc.card(
-        header=pc.heading("What have you done recently?", size="lg"),
-        body=pc.cond(
+def recent_history_table() -> rx.Component:
+    return rx.card(
+        header=rx.heading("What have you done recently?", size="lg"),
+        body=rx.cond(
             RecentHistoryState.have_recent_meetings == False,
-            pc.text("No recent meetings -- go have some fun!"),
-            pc.table(
-                pc.thead(
-                    pc.tr(
-                        pc.th("What"),
-                        pc.th("When"),
-                        pc.th("With"),
+            rx.text("No recent meetings -- go have some fun!"),
+            rx.table(
+                rx.thead(
+                    rx.tr(
+                        rx.th("What"),
+                        rx.th("When"),
+                        rx.th("With"),
                     )
                 ),
-                pc.tbody(pc.foreach(RecentHistoryState.recent_meetings, show_meeting)),
+                rx.tbody(rx.foreach(RecentHistoryState.recent_meetings, show_meeting)),
             ),
         ),
     )
